@@ -24,8 +24,12 @@ extern YYLTYPE yylloc; // Used for position information, see below.
 
 %x c_comment
 DIGIT [0-9]
-/* {DIGIT}+"."{DIGIT}*
- ID [a-z][a-z0-9]* */
+INT {DIGIT}+
+EXPONENT E[+-]?{INT}
+REAL {DIGIT}+"."?{DIGIT}*{EXPONENT}?|{DIGIT}*"."{DIGIT}+{EXPONENT}?
+ID [a-z][a-z0-9]*
+COMMENT "/*"."*/"
+STRING [a-z]+
 
 /* Position information is entered into the yylloc variable, so we will be
    able to generate good error messages later in later phases. */
@@ -34,6 +38,19 @@ DIGIT [0-9]
    identifiers, integers, reals, and whitespace. */
 %%
 
+
+{INT}                    {
+                            yylloc.first_line = yylineno;
+                            yylloc.first_column = column;
+                            column += yyleng;
+                            return T_INTNUM;
+                         }
+{REAL}						{
+                            yylloc.first_line = yylineno;
+                            yylloc.first_column = column;
+                            column += yyleng;
+                            return T_REALNUM;
+                         	}
 \.                       {
                             yylloc.first_line = yylineno;
                             yylloc.first_column = column;

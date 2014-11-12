@@ -67,6 +67,7 @@ typedef struct {
 #define	T_STRINGCONST	301	// 'diesel'
 
 
+
 #define NR_SYMS		83	// Total no. of grammar symbols
 
 extern YYSTYPE yylval;
