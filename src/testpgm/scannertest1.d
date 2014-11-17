@@ -17,3 +17,4 @@ $
   newline in it'
 
 foo%fie
+
