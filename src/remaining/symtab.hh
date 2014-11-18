@@ -381,6 +381,10 @@ ostream &operator<<(ostream &, symbol *);
 class symbol_table
 {
 private:
+
+	// custom methods
+	void choose_installation(const pool_index pool_p, const sym_type tag);
+
     // --- String pool variables. ---
 
     // The actual string pool.

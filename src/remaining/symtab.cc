@@ -557,7 +557,7 @@ sym_index symbol_table::lookup_symbol(const pool_index pool_p)
 	hash_index hash_val = hash(pool_p);
 	sym_index sym_i = hash_table[hash_val];
 	while (sym_i != NULL_SYM) {
-		symbol* sym = sym_tab[sym_i];
+		symbol* sym = sym_table[sym_i];
 		if (sym->id == pool_p) {
 			return sym_i;
 		}
@@ -565,7 +565,7 @@ sym_index symbol_table::lookup_symbol(const pool_index pool_p)
 	}
 
 	// Check last symbol in chain
-	symbol* last_sym = sym_tab[sym_i];
+	symbol* last_sym = sym_table[sym_i];
 	if (last_sym->id == pool_p) {
 		return sym_i;
 	}
@@ -663,10 +663,65 @@ sym_index symbol_table::install_symbol(const pool_index pool_p,
 	sym_index sym_i = lookup_symbol(pool_p);
 
 	// if exists in current scope: return current index
-	// if exists in lower scope: install
-	// if not exists: install
+	if (sym_i != NULL_SYM && sym_i >= current_environment()) {
+		return sym_i;
+	}
 
-    return 0; // Return index to the symbol we just created.
+	// if exists in lower scope: install
+
+	if ((sym_i != NULL_SYM && sym_i < current_environment()) // exists in lower scope
+			|| (sym_i == NULL_SYM))							// does not
+	{
+		choose_installation(pool_p, tag);
+	}
+
+    return sym_pos; // Return index to the symbol we just created.
+}
+
+void symbol_table::choose_installation(const pool_index pool_p,
+        							   const sym_type tag)
+{
+	/*
+	 	SYM_ARRAY,
+	    SYM_FUNC,
+	    SYM_PROC,
+	    SYM_VAR,
+	    SYM_PARAM,
+	    SYM_CONST,
+	    SYM_NAMETYPE,
+	    SYM_UNDEF
+	 */
+	symbol sym = NULL; // make into pointer?
+	switch (tag) {
+		case SYM_ARRAY:
+			sym = array_symbol(pool_p);
+			break;
+		case SYM_FUNC:
+			sym = function_symbol(pool_p);
+			break;
+		case SYM_PROC:
+			sym = procedure_symbol(pool_p);
+			break;
+		case SYM_VAR:
+			sym = variable_symbol(pool_p);
+			break;
+		case SYM_PARAM:
+			sym = parameter_symbol(pool_p);
+			break;
+		case SYM_CONST:
+			sym = constant_symbol(pool_p);
+			break;
+		case SYM_NAMETYPE:
+			sym = nametype_symbol(pool_p);
+			break;
+		case SYM_UNDEF:
+			sym = symbol(pool_p);
+			break;
+		default:
+			break;
+	}
+	sym.hash_link = lookup_symbol(pool_p);
+
 }
 
 /* Enter a constant into the symbol table. The value is an integer. The type
