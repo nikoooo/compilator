@@ -568,19 +568,13 @@ sym_index symbol_table::lookup_symbol(const pool_index pool_p)
     /* Your code here */
 	hash_index hash_val = hash(pool_p);
 	sym_index sym_i = hash_table[hash_val];
-	while (sym_i != NULL_SYM) {
+	do {
 		symbol* sym = sym_table[sym_i];
 		if (sym->id == pool_p) {
 			return sym_i;
 		}
 		sym_i = sym->hash_link;
-	}
-
-	// Check last symbol in chain
-	symbol* last_sym = sym_table[sym_i];
-	if (last_sym->id == pool_p) {
-		return sym_i;
-	}
+	} while (sym_i != NULL_SYM);
 
     return NULL_SYM;
 }
