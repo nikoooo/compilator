@@ -28,3 +28,6 @@
 *.app
 .metadata
 scanner
+.project
+.cproject
+symtab

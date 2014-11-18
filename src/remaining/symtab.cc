@@ -532,6 +532,8 @@ sym_index symbol_table::current_environment()
 void symbol_table::open_scope()
 {
     /* Your code here */
+	current_level++;
+	block_table[current_level] = sym_pos;
 }
 
 
@@ -539,7 +541,8 @@ void symbol_table::open_scope()
 sym_index symbol_table::close_scope()
 {
     /* Your code here */
-    return NULL_SYM;
+	current_level--;
+    return current_environment();
 }
 
 
@@ -551,6 +554,22 @@ sym_index symbol_table::close_scope()
 sym_index symbol_table::lookup_symbol(const pool_index pool_p)
 {
     /* Your code here */
+	hash_index hash_val = hash(pool_p);
+	sym_index sym_i = hash_table[hash_val];
+	while (sym_i != NULL_SYM) {
+		symbol* sym = sym_tab[sym_i];
+		if (sym->id == pool_p) {
+			return sym_i;
+		}
+		sym_i = sym->hash_link;
+	}
+
+	// Check last symbol in chain
+	symbol* last_sym = sym_tab[sym_i];
+	if (last_sym->id == pool_p) {
+		return sym_i;
+	}
+
     return NULL_SYM;
 }
 
@@ -641,6 +660,12 @@ sym_index symbol_table::install_symbol(const pool_index pool_p,
                                        const sym_type tag)
 {
     /* Your code here */
+	sym_index sym_i = lookup_symbol(pool_p);
+
+	// if exists in current scope: return current index
+	// if exists in lower scope: install
+	// if not exists: install
+
     return 0; // Return index to the symbol we just created.
 }
 
