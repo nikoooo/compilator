@@ -28,8 +28,6 @@ constant_symbol::constant_symbol(const pool_index pool_p) :
     // be both integer and real), we just pick one of them arbitrarily and
     // decide that all uninitiated constants have the integer value 0.
     const_value.ival = 0;
-
-    tag = SYM_CONST;
 }
 
 
@@ -38,7 +36,6 @@ constant_symbol::constant_symbol(const pool_index pool_p) :
 variable_symbol::variable_symbol(const pool_index pool_p) :
     symbol(pool_p)
 {
-	tag = SYM_VAR;
 }
 
 
@@ -49,7 +46,6 @@ array_symbol::array_symbol(const pool_index pool_p) :
     // Illegal, must be changed later.
     index_type = void_type;
     array_cardinality = 0;
-    tag = SYM_ARRAY;
 }
 
 
@@ -59,7 +55,6 @@ parameter_symbol::parameter_symbol(const pool_index pool_p) :
 {
     size = 0;
     preceding = NULL;
-    tag = SYM_PARAM;
 }
 
 
@@ -70,7 +65,6 @@ procedure_symbol::procedure_symbol(const pool_index pool_p) :
     ar_size = 0;
     label_nr = 0;
     last_parameter = NULL;
-    tag = SYM_PROC;
 }
 
 
@@ -81,7 +75,6 @@ function_symbol::function_symbol(const pool_index pool_p) :
     ar_size = 0;
     label_nr = 0;
     last_parameter = NULL;
-    tag = SYM_FUNC;
 }
 
 
@@ -89,7 +82,6 @@ function_symbol::function_symbol(const pool_index pool_p) :
 nametype_symbol::nametype_symbol(const pool_index pool_p) :
     symbol(pool_p)
 {
-	tag = SYM_NAMETYPE;
 }
 
 

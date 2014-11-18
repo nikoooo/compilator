@@ -532,6 +532,8 @@ sym_index symbol_table::current_environment()
 void symbol_table::open_scope()
 {
     /* Your code here */
+	if(current_level == MAX_BLOCK)
+		fatal("Max block_level reached.");
 	current_level++;
 	block_table[current_level] = sym_pos;
 }
@@ -541,6 +543,16 @@ void symbol_table::open_scope()
 sym_index symbol_table::close_scope()
 {
     /* Your code here */
+
+	for (int i = sym_pos; i >= block_table[current_level] + 1; --i) {
+		symbol * sym = sym_table[i];
+		if (hash_table[sym->back_link] == i) {
+			hash_table[sym->back_link] = sym->hash_link;
+			sym->hash_link = NULL_SYM;
+		}
+
+	}
+
 	current_level--;
     return current_environment();
 }
@@ -672,6 +684,9 @@ sym_index symbol_table::install_symbol(const pool_index pool_p,
 	if ((sym_i != NULL_SYM && sym_i < current_environment()) // exists in lower scope
 			|| (sym_i == NULL_SYM))							// does not
 	{
+		if(sym_pos > MAX_SYM - 1) {
+			fatal("Symbol table full.");
+		}
 		choose_installation(pool_p, tag);
 	}
 
@@ -691,36 +706,42 @@ void symbol_table::choose_installation(const pool_index pool_p,
 	    SYM_NAMETYPE,
 	    SYM_UNDEF
 	 */
-	symbol sym = NULL; // make into pointer?
+	symbol *sym; // make into pointer?
 	switch (tag) {
 		case SYM_ARRAY:
-			sym = array_symbol(pool_p);
+			sym = new array_symbol(pool_p);
 			break;
 		case SYM_FUNC:
-			sym = function_symbol(pool_p);
+			sym = new function_symbol(pool_p);
 			break;
 		case SYM_PROC:
-			sym = procedure_symbol(pool_p);
+			sym = new procedure_symbol(pool_p);
 			break;
 		case SYM_VAR:
-			sym = variable_symbol(pool_p);
+			sym = new variable_symbol(pool_p);
 			break;
 		case SYM_PARAM:
-			sym = parameter_symbol(pool_p);
+			sym = new parameter_symbol(pool_p);
 			break;
 		case SYM_CONST:
-			sym = constant_symbol(pool_p);
+			sym = new constant_symbol(pool_p);
 			break;
 		case SYM_NAMETYPE:
-			sym = nametype_symbol(pool_p);
+			sym = new nametype_symbol(pool_p);
 			break;
 		case SYM_UNDEF:
-			sym = symbol(pool_p);
+			sym = new symbol(pool_p);
 			break;
 		default:
 			break;
 	}
-	sym.hash_link = lookup_symbol(pool_p);
+	sym_pos++;
+
+	sym->hash_link = lookup_symbol(pool_p);
+	sym->level = current_environment();
+	hash_index hash_i = hash(pool_p);
+	sym->back_link = hash(hash_i);
+	hash_table[hash_i] = sym_pos;
 
 }
 
@@ -965,8 +986,33 @@ sym_index symbol_table::enter_function(position_information *pos,
 sym_index symbol_table::enter_procedure(position_information *pos,
                                         const pool_index pool_p)
 {
-    /* Your code here */
-    return NULL_SYM;
+	 // Install a function_symbol in the symbol table.
+	    // The function type will be set i labb3, the parser, because
+	    // Diesel's grammar doesn't let us know the type of the symbol when
+	    // the name is installed.
+	    // When testing labb2, test nr 3 a function type will be set,
+	    // but it is done inside the testprogram symtabtest.cc
+	    sym_index sym_p = install_symbol(pool_p, SYM_PROC);
+	    procedure_symbol *proc = sym_table[sym_p]->get_procedure_symbol();
+
+	    // Make sure it's not already been declared.
+	    if (proc->tag != SYM_UNDEF) {
+	        type_error(pos) << "Redeclaration: " << proc << endl;
+	        return sym_p; // returns the original symbol
+	    }
+
+	    // Set up the function-specific fields.
+	    proc->tag = SYM_PROC;
+	    // Parameters are added later on.
+	    proc->last_parameter = NULL;
+
+	    // This will grow as local variables and temporaries are added.
+	    proc->ar_size = 0;
+	    proc->label_nr = get_next_label();
+
+	    sym_table[sym_p] = proc;
+
+	    return sym_p;
 }
 
 
