@@ -568,6 +568,8 @@ sym_index symbol_table::lookup_symbol(const pool_index pool_p)
     /* Your code here */
 	hash_index hash_val = hash(pool_p);
 	sym_index sym_i = hash_table[hash_val];
+	if (sym_i == NULL_SYM) return NULL_SYM;
+
 	do {
 		symbol* sym = sym_table[sym_i];
 		if (sym->id == pool_p) {
@@ -700,7 +702,7 @@ void symbol_table::choose_installation(const pool_index pool_p,
 	    SYM_NAMETYPE,
 	    SYM_UNDEF
 	 */
-	symbol *sym; // make into pointer?
+	symbol *sym;
 	switch (tag) {
 		case SYM_ARRAY:
 			sym = new array_symbol(pool_p);
@@ -731,11 +733,14 @@ void symbol_table::choose_installation(const pool_index pool_p,
 	}
 	sym_pos++;
 
-	sym->hash_link = lookup_symbol(pool_p);
-	sym->level = current_environment();
+	sym->level = current_level;
 	hash_index hash_i = hash(pool_p);
-	sym->back_link = hash(hash_i);
+	sym->back_link = hash_i;
+	// link back to old symbol with same hash. ok since hash_table is initialized to NULL_SYM
+	sym->hash_link = hash_table[hash_i];
+
 	hash_table[hash_i] = sym_pos;
+	sym_table[sym_pos] = sym;
 
 }
 
