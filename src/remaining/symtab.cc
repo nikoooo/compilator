@@ -546,8 +546,9 @@ sym_index symbol_table::close_scope()
 
 	for (int i = sym_pos; i >= block_table[current_level] + 1; --i) {
 		symbol * sym = sym_table[i];
-		if (hash_table[sym->back_link] == i) {
-			hash_table[sym->back_link] = sym->hash_link;
+		hash_index hash_i = hash(sym->id);
+		if (hash_table[hash_i] == i) {
+			hash_table[hash_i] = sym->hash_link;
 			sym->hash_link = NULL_SYM;
 		}
 
@@ -567,8 +568,12 @@ sym_index symbol_table::lookup_symbol(const pool_index pool_p)
 {
     /* Your code here */
 	hash_index hash_val = hash(pool_p);
+	if (hash_table[hash_val] == NULL_SYM) return NULL_SYM;
 	sym_index sym_i = hash_table[hash_val];
-	if (sym_i == NULL_SYM) return NULL_SYM;
+	if (pool_p == 81) {
+		cout << "++++++++++++++++++++++hash: " << hash_val << ", symi " << sym_i << endl;
+	}
+
 
 	do {
 		symbol* sym = sym_table[sym_i];
@@ -677,14 +682,10 @@ sym_index symbol_table::install_symbol(const pool_index pool_p,
 
 	// if exists in lower scope: install
 
-	if ((sym_i != NULL_SYM && sym_i < current_environment()) // exists in lower scope
-			|| (sym_i == NULL_SYM))							// does not
-	{
-		if(sym_pos > MAX_SYM - 1) {
-			fatal("Symbol table full.");
-		}
-		choose_installation(pool_p, tag);
+	if(sym_pos > MAX_SYM - 1) {
+		fatal("Symbol table full.");
 	}
+	choose_installation(pool_p, tag);
 
     return sym_pos; // Return index to the symbol we just created.
 }
