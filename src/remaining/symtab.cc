@@ -671,7 +671,7 @@ sym_index symbol_table::install_symbol(const pool_index pool_p,
 	sym_index sym_i = lookup_symbol(pool_p);
 
 	// if exists in current scope: return current index
-	if (sym_i != NULL_SYM && sym_i >= current_environment()) {
+	if (sym_i != NULL_SYM && sym_table[sym_i]->level == current_level) {
 		return sym_i;
 	}
 
@@ -1004,6 +1004,9 @@ sym_index symbol_table::enter_procedure(position_information *pos,
 	    proc->tag = SYM_PROC;
 	    // Parameters are added later on.
 	    proc->last_parameter = NULL;
+
+	    // set void type
+	    proc->type = void_type;
 
 	    // This will grow as local variables and temporaries are added.
 	    proc->ar_size = 0;
