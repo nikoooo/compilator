@@ -84,7 +84,6 @@ int main(int argc, char **argv) {
                                     << sym_tab->get_symbol(sym_tab->lookup_symbol(c_var))<< endl
                                     << sym_tab->get_symbol(sym_tab->lookup_symbol(b_var))<< endl
                                      << sym_tab->get_symbol(sym_tab->lookup_symbol(a_var))<< endl;
-cout << ">>>>>>>>>>>>>>>>" << c_var << endl;
 /*      end;                */ sym_tab->close_scope();
 /*                            */
 /*   begin                    */
@@ -92,7 +91,6 @@ cout << ">>>>>>>>>>>>>>>>" << c_var << endl;
                                     << sym_tab->get_symbol(sym_tab->lookup_symbol(c_var))<< endl
                                     << sym_tab->get_symbol(sym_tab->lookup_symbol(b_var))<< endl
                                     << sym_tab->get_symbol(sym_tab->lookup_symbol(a_var))<< endl;
-cout << ">>>>>>>>>>>>>>>>" << c_var << endl;
 /*   end;                    */ sym_tab->close_scope();
 /*                            */
 /*begin                        */
