@@ -508,7 +508,7 @@ sym_index symbol_table::close_scope() {
 
 			symbol * sym = sym_table[i];
 
-			hash_index hash_i = hash(sym->id);
+			hash_index hash_i = sym->back_link;
 			if (hash_table[hash_i] == i) {
 				hash_table[hash_i] = sym->hash_link;
 				sym->hash_link = NULL_SYM;
@@ -528,6 +528,8 @@ sym_index symbol_table::close_scope() {
 sym_index symbol_table::lookup_symbol(const pool_index pool_p) {
 	/* Your code here */
 	hash_index hash_val = hash(pool_p);
+
+
 	if (hash_table[hash_val] == NULL_SYM)
 		return NULL_SYM;
 	sym_index sym_i = hash_table[hash_val];
@@ -674,7 +676,9 @@ void symbol_table::choose_installation(const pool_index pool_p,
 		sym = new symbol(pool_p);
 		break;
 	default:
+		fatal("No tag chosen. ERROR!");
 		break;
+
 	}
 	sym_pos++;
 
