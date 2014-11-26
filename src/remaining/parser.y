@@ -179,8 +179,14 @@ prog_decl       : prog_head T_SEMICOLON const_part variable_part
 
 prog_head       : T_PROGRAM T_IDENT
                 {
-                    /* Your code here */
+                    /* Your code here nikokod, kanske inte ok :S 
+                        det finns ingen 'ast_programhead funktion i .hh. wtf'FEL*/
+
+                    position_information *pos = new position_information(@1.first_line, @1.first_column);
+                    sym_index prog_loc = new sym_tab->enter_programFINSNINTE(pos, $2);
                     sym_tab->open_scope();
+
+                    
                 }
                 ;
 
@@ -199,6 +205,7 @@ const_decls     : const_decl
 const_decl      : T_IDENT T_EQ integer T_SEMICOLON
                 {
                     /* Your code here */
+                    
                 }
                 | T_IDENT T_EQ real T_SEMICOLON
                 {
@@ -410,7 +417,8 @@ proc_decl       : proc_head opt_param_list T_SEMICOLON const_part variable_part
 
 func_decl       : func_head opt_param_list T_COLON type_id T_SEMICOLON const_part variable_part
                 {
-                    /* Your code here */
+                    /* Your niko code here*/
+                    $$ = $1;
                 }
                 ;
 
