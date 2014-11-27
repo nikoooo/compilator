@@ -4,11 +4,14 @@
 #include <string.h>
 #include "symtab.hh"
 
-
-#include "scanner.hh"
 // This is where you put #include directives as needed for later labs.
 // include "ast.hh", parser.hh" in that order
 
+//#include "scanner.hh" // no longer needed
+#include "ast.hh"
+#include "parser.hh"
+
+	
 int column = 0;
 
 extern YYLTYPE yylloc; // Used for position information, see below.

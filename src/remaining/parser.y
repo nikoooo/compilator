@@ -181,11 +181,19 @@ prog_head       : T_PROGRAM T_IDENT
                 {
                     /* Your code here nikokod, kanske inte ok :S 
                         det finns ingen 'ast_programhead funktion i .hh. wtf'FEL*/
-
-                    position_information *pos = new position_information(@1.first_line, @1.first_column);
-                    sym_index prog_loc = new sym_tab->enter_programFINSNINTE(pos, $2);
-                    sym_tab->open_scope();
-
+					position_information *pos =
+						new position_information(@1.first_line,
+												 @1.first_column);
+					// We add the function id to the symbol table.
+					sym_index prog_loc = sym_tab->enter_procedure(pos,
+																  $2);
+					// Open a new scope.
+					sym_tab->open_scope();
+					// This AST node is just a temporary node which we create
+					// here in order to be able to provide the symbol table
+					// index for the procedure to the proc_decl production
+					// above. It's needed for code generation.
+					$$ = new ast_procedurehead(pos, prog_loc);
                     
                 }
                 ;
@@ -205,11 +213,14 @@ const_decls     : const_decl
 const_decl      : T_IDENT T_EQ integer T_SEMICOLON
                 {
                     /* Your code here */
-                    
+					position_information *pos = new position_information(@1.first_line, @1.first_column);
+					sym_index loc = sym_tab->enter_constant(pos, $1, integer_type, $3->value);
                 }
                 | T_IDENT T_EQ real T_SEMICOLON
                 {
                     /* Your code here */
+					position_information *pos = new position_information(@1.first_line, @1.first_column);
+					sym_index loc = sym_tab->enter_constant(pos, $1, real_type, $3->value);
                 }
                 | T_IDENT T_EQ T_STRINGCONST T_SEMICOLON
                 {
@@ -224,6 +235,9 @@ const_decl      : T_IDENT T_EQ integer T_SEMICOLON
                     // constant bar = foo;
                     // ...now, why would anyone want to do that?
                     /* Your code here */
+//                	position_information *pos = new position_information(@1.first_line, @1.first_column);
+//                	sym_tab->lookup_symbol($3->pool_p);
+                	//TODO:whatwhat
                 }
                 
                 ;
@@ -242,10 +256,16 @@ var_decls       : var_decl
 var_decl        : T_IDENT T_COLON type_id T_SEMICOLON
                 {
                     /* Your code here */
+					position_information *pos = new position_information(@1.first_line, @1.first_column);
+	                	
+	                sym_index var_loc = sym_tab->enter_variable(pos, $1, $3->sym_p);
                 }
                 | T_IDENT T_COLON T_ARRAY T_LEFTBRACKET integer T_RIGHTBRACKET T_OF type_id T_SEMICOLON
                 {
                     /* Your code here */
+                	position_information *pos = new position_information(@1.first_line, @1.first_column);
+                	
+                	sym_index var_loc = sym_tab->enter_array(pos, $1, $8->sym_p, $5->value);
                 }
                 | T_IDENT T_COLON T_ARRAY T_LEFTBRACKET const_id T_RIGHTBRACKET T_OF type_id T_SEMICOLON
                 {
@@ -468,6 +488,7 @@ func_head       : T_FUNCTION T_IDENT
 opt_param_list  : T_LEFTPAR param_list T_RIGHTPAR
                 {
                     /* Your code here */
+					$$ = $2;
                 }
                 | T_LEFTPAR error T_RIGHTPAR
                 {
@@ -476,6 +497,7 @@ opt_param_list  : T_LEFTPAR param_list T_RIGHTPAR
                 | /* empty */
                 {
                     /* Your code here */
+                	// TODO
                 }
                 ;
 
@@ -512,6 +534,7 @@ param           : T_IDENT T_COLON type_id
 comp_stmt       : T_BEGIN stmt_list T_END
                 {
                     /* Your code here */
+					$$ = $2; // TODO: wat is comp?
                 }
                 ;
 
@@ -519,10 +542,14 @@ comp_stmt       : T_BEGIN stmt_list T_END
 stmt_list       : stmt
                 {
                     /* Your code here */
+					position_information *pos = new position_information(@1.first_line, @1.first_column);
+					$$ = new ast_stmt_list(pos, $1);
                 }
                 | stmt_list T_SEMICOLON stmt
                 {
                     /* Your code here */
+					position_information *pos = new position_information(@1.first_line, @1.first_column);
+					$$ = new ast_stmt_list(pos, $3, $1);
                 }
                 ;
 
@@ -530,31 +557,44 @@ stmt_list       : stmt
 stmt            : T_IF expr T_THEN stmt_list elsif_list else_part T_END
                 {
                     /* Your code here */
+					position_information *pos = new position_information(@1.first_line, @1.first_column);
+					$$ = new ast_if(pos, $2, $4, $5, $6);
                 }
                 | T_WHILE expr T_DO stmt_list T_END
                 {
                     /* Your code here */
+                	position_information *pos = new position_information(@1.first_line, @1.first_column);
+					$$ = new ast_while(pos, $2, $4);
                 }
                 | proc_id T_LEFTPAR opt_expr_list T_RIGHTPAR
                 {
                     /* Your code here */
+                	position_information *pos = new position_information(@1.first_line, @1.first_column);
+					$$ = new ast_procedurecall(pos, $1, $3);
                 }
                 | lvariable T_ASSIGN expr
                 {
                     /* Your code here */
+                	position_information *pos = new position_information(@1.first_line, @1.first_column);
+					$$ = new ast_assign(pos, $1, $3);
                 }
                 | T_RETURN expr
                 {
                     /* Your code here */
+                	position_information *pos = new position_information(@1.first_line, @1.first_column);
+					$$ = new ast_return(pos, $2);
                 }
                 | T_RETURN
                 {
                     /* Your code here */
+                	position_information *pos = new position_information(@1.first_line, @1.first_column);
+					$$ = new ast_return(pos);
                 }
                 
                 | /* empty */
                 {
                     /* Your code here */
+                	// TODO
                 }
                 ;
 
@@ -578,10 +618,13 @@ lvariable       : lvar_id
 rvariable       : rvar_id
                 {
                     /* Your code here */
+					$$ = $1;
                 }
                 | array_id T_LEFTBRACKET expr T_RIGHTBRACKET
                 {
                     /* Your code here */
+                	$$ = new ast_indexed($1->pos, $1, $3);
+                	// TODO: ??
                 }
                 
                 ;
@@ -590,10 +633,13 @@ rvariable       : rvar_id
 elsif_list      : elsif_list elsif
                 {
                     /* Your code here */
+						position_information *pos = new position_information(@1.first_line, @1.first_column);
+						$$ = new ast_elsif_list(pos, $2, $1);
                 }
                 | /* empty */
                 {
                     /* Your code here */
+                	//TODO:
                 }
                 ;
 
@@ -601,6 +647,9 @@ elsif_list      : elsif_list elsif
 elsif           : T_ELSIF expr T_THEN stmt_list
                 {
                     /* Your code here */
+					position_information *pos = new position_information(@1.first_line, @1.first_column);
+					$$ = new ast_elsif(pos, $2, $4);
+	                	                	
                 }
                 ;
 
@@ -608,10 +657,12 @@ elsif           : T_ELSIF expr T_THEN stmt_list
 else_part       : T_ELSE stmt_list
                 {
                     /* Your code here */
+					$$ = $2;
                 }
                 | /* empty */
                 {
                     /* Your code here */
+                	//TODO:fråga olle
                 }
                 ;
 
@@ -619,10 +670,12 @@ else_part       : T_ELSE stmt_list
 opt_expr_list   : expr_list
                 {
                     /* Your code here */
+					$$ = $1;
                 }
                 | /* empty */
                 {
                     /* Your code here */
+                	// TODO: fråga.
                 }
                 ;
 
@@ -630,10 +683,14 @@ opt_expr_list   : expr_list
 expr_list       : expr
                 {
                     /* Your code here */
+					position_information *pos = new position_information(@1.first_line, @1.first_column);
+					$$ = new ast_expr_list(pos, $1);
                 }
                 | expr_list T_COMMA expr
                 {
                     /* Your code here */
+                	position_information *pos = new position_information(@1.first_line, @1.first_column);
+                	                	$$ = new ast_expr_list(pos, $3, $1);
                 }
                 ;
 
@@ -641,22 +698,31 @@ expr_list       : expr
 expr            : simple_expr
                 {
                     /* Your code here */
+					$$ = $1;
                 }
                 | expr T_EQ simple_expr
                 {
                     /* Your code here */
+                	position_information *pos = new position_information(@1.first_line, @1.first_column);
+                	$$ = new ast_equal(pos, $1, $3);
                 }
                 | expr T_NOTEQ simple_expr
                 {
                     /* Your code here */
+                	position_information *pos = new position_information(@1.first_line, @1.first_column);
+                	$$ = new ast_notequal(pos, $1, $3);
                 }
                 | expr T_LESSTHAN simple_expr
                 {
                     /* Your code here */
+                	position_information *pos = new position_information(@1.first_line, @1.first_column);
+                	$$ = new ast_lessthan(pos, $1, $3);
                 }
                 | expr T_GREATERTHAN simple_expr
                 {
                     /* Your code here */
+                	position_information *pos = new position_information(@1.first_line, @1.first_column);
+                	$$ = new ast_greaterthan(pos, $1, $3);
                 }
                 ;
 
@@ -664,26 +730,36 @@ expr            : simple_expr
 simple_expr     : term
                 {
                     /* Your code here */
+					$$ = $1;
                 }
                 | T_ADD term
                 {
                     /* Your code here */
+                	//position_information *pos = new position_information(@1.first_line, @1.first_column);
+                	fatal("Unary plus not allowed."); // TODO
                 }
                 | T_SUB term
                 {
-                    /* Your code here */
+                	position_information *pos = new position_information(@1.first_line, @1.first_column);
+                	$$ = new ast_uminus(pos, $2);
                 }
                 | simple_expr T_OR term
                 {
                     /* Your code here */
+                	position_information *pos = new position_information(@1.first_line, @1.first_column);
+					$$ = new ast_or(pos, $1, $3);
                 }
                 | simple_expr T_ADD term
                 {
                     /* Your code here */
+                	position_information *pos = new position_information(@1.first_line, @1.first_column);
+                	$$ = new ast_add(pos, $1, $3);
                 }
                 | simple_expr T_SUB term
                 {
                     /* Your code here */
+                	position_information *pos = new position_information(@1.first_line, @1.first_column);
+                	$$ = new ast_sub(pos, $1, $3);
                 }
                 ;
 
@@ -691,26 +767,37 @@ simple_expr     : term
 term            : factor
                 {
                     /* Your code here */
+					$$ = $1;
                 }
                 | term T_AND factor
                 {
                     /* Your code here */
+                	position_information *pos = new position_information(@1.first_line, @1.first_column);
+                	$$ = new ast_and(pos, $1, $3);
                 }
                 | term T_MUL factor
                 {
                     /* Your code here */
+                	position_information *pos = new position_information(@1.first_line, @1.first_column);
+                	                	$$ = new ast_mult(pos, $1, $3);
                 }
                 | term T_RDIV factor
                 {
                     /* Your code here */
+                	position_information *pos = new position_information(@1.first_line, @1.first_column);
+                	                	$$ = new ast_divide(pos, $1, $3);
                 }
                 | term T_IDIV factor
                 {
                     /* Your code here */
+                	position_information *pos = new position_information(@1.first_line, @1.first_column);
+                	                	$$ = new ast_idiv(pos, $1, $3);
                 }
                 | term T_MOD factor
                 {
                     /* Your code here */
+                	position_information *pos = new position_information(@1.first_line, @1.first_column);
+                	                	$$ = new ast_mod(pos, $1, $3);
                 }
                 ;
 
@@ -734,10 +821,13 @@ factor          : rvariable
                 | T_NOT factor
                 {
                     /* Your code here */
+                	position_information *pos = new position_information(@1.first_line, @1.first_column);
+                	$$ = new ast_not(pos, $2);//TODO: Dunno whats going on here...
                 }
                 | T_LEFTPAR expr T_RIGHTPAR
                 {
                     /* Your code here */
+                	$$ = $2;
                 }
                 
                 ;
@@ -746,8 +836,9 @@ factor          : rvariable
 func_call       : func_id T_LEFTPAR opt_expr_list T_RIGHTPAR
                 {
                     /* Your code here */
+					position_information *pos = new position_information(@1.first_line, @1.first_column);
+					$$ = new ast_functioncall(pos, $1, $3);
                 }
-                |
                 
                 ;
 

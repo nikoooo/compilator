@@ -31,3 +31,4 @@ scanner
 .project
 .cproject
 symtab
+compiler
