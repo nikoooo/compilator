@@ -496,7 +496,7 @@ union yyalloc
 /* YYNNTS -- Number of nonterminals.  */
 #define YYNNTS  45
 /* YYNRULES -- Number of rules.  */
-#define YYNRULES  94
+#define YYNRULES  95
 /* YYNSTATES -- Number of states.  */
 #define YYNSTATES  188
 
@@ -550,15 +550,15 @@ static const yytype_uint8 yytranslate[] =
 static const yytype_uint16 yyrline[] =
 {
        0,   124,   124,   173,   180,   202,   203,   204,   208,   209,
-     213,   219,   225,   229,   246,   247,   251,   252,   256,   263,
-     270,   322,   323,   327,   328,   332,   380,   431,   438,   446,
-     466,   488,   493,   498,   505,   510,   516,   534,   542,   548,
-     557,   563,   569,   575,   581,   587,   595,   601,   605,   611,
-     618,   623,   633,   640,   647,   657,   663,   670,   676,   683,
-     689,   698,   703,   709,   715,   721,   730,   735,   741,   746,
-     752,   758,   767,   772,   778,   784,   790,   796,   805,   809,
-     813,   817,   821,   827,   836,   846,   859,   872,   887,   901,
-     914,   931,   945,   959,   973
+     213,   219,   225,   229,   259,   260,   264,   265,   269,   276,
+     283,   335,   336,   340,   341,   345,   393,   444,   451,   459,
+     479,   501,   506,   511,   519,   524,   530,   548,   557,   565,
+     574,   582,   588,   594,   600,   606,   612,   620,   627,   631,
+     637,   644,   649,   660,   667,   675,   685,   691,   699,   705,
+     713,   719,   728,   733,   739,   745,   751,   760,   765,   771,
+     776,   782,   788,   797,   802,   808,   814,   820,   826,   835,
+     839,   843,   847,   851,   857,   866,   876,   889,   902,   917,
+     931,   944,   961,   975,   989,  1003
 };
 #endif
 
@@ -604,7 +604,7 @@ static const yytype_uint16 yytoknum[] =
 #define yypact_value_is_default(Yystate) \
   (!!((Yystate) == (-103)))
 
-#define YYTABLE_NINF -94
+#define YYTABLE_NINF -95
 
 #define yytable_value_is_error(Yytable_value) \
   0
@@ -640,24 +640,24 @@ static const yytype_int16 yypact[] =
 static const yytype_uint8 yydefact[] =
 {
        0,     0,     0,    22,     0,     4,     1,     0,     0,     0,
-      21,    23,    22,    22,    33,    33,     0,    29,    30,    46,
+      21,    23,    22,    22,    33,    33,     0,    29,    30,    40,
        0,    24,     0,     0,     0,     0,     0,     0,     0,    15,
-       0,     0,    45,    94,     0,    38,     0,    47,     0,     0,
-      89,     2,     0,     0,     0,     0,     0,    34,     0,     0,
+       0,     0,    46,    95,     0,    38,     0,    48,     0,     0,
+      90,     2,     0,     0,     0,     0,     0,    34,     0,     0,
        0,     6,     8,     5,     0,     3,     0,     0,     0,     0,
-      85,    86,    78,     0,    61,    66,    72,    79,    80,    81,
-      50,     0,     0,    90,     0,    44,    46,    37,     0,    58,
-       0,    25,    26,    32,     0,     0,    31,    15,     0,    87,
-       0,     9,     0,    14,    16,     0,    67,    68,    82,     0,
-       0,     0,     0,    46,     0,     0,     0,     0,     0,     0,
-       0,     0,    58,     0,    46,    39,    43,     0,    57,    59,
+      86,    87,    79,     0,    62,    67,    73,    80,    81,    82,
+      51,     0,     0,    91,     0,    45,    47,    37,     0,    59,
+       0,    25,    26,    32,     0,     0,    31,    15,     0,    88,
+       0,     9,     0,    14,    16,     0,    68,    69,    83,     0,
+       0,     0,     0,    40,     0,     0,     0,     0,     0,     0,
+       0,     0,    59,     0,    40,    39,    44,     0,    58,    60,
        0,     0,    36,    35,    27,     0,     0,     0,     0,     0,
-      88,     0,    17,    83,    62,    64,    65,    63,    53,    70,
-      71,    69,    74,    75,    73,    76,    77,     0,     0,     0,
-      42,     0,    49,    48,    15,    12,    10,    11,    13,     0,
-       0,    56,    84,    51,    41,    60,    28,     0,    18,    46,
-       0,    52,     0,     0,     0,    55,     0,    40,     0,     0,
-      46,     0,     0,    54,     0,     0,    19,    20
+      89,     0,    17,    84,    63,    65,    66,    64,    54,    71,
+      72,    70,    75,    76,    74,    77,    78,     0,     0,     0,
+      43,     0,    50,    49,    15,    12,    10,    11,    13,     0,
+       0,    57,    85,    52,    42,    61,    28,     0,    18,    40,
+       0,    53,     0,     0,     0,    56,     0,    41,     0,     0,
+      40,     0,     0,    55,     0,     0,    19,    20
 };
 
   /* YYPGOTO[NTERM-NUM].  */
@@ -692,8 +692,8 @@ static const yytype_int16 yytable[] =
       58,    98,     1,    33,   106,   103,     6,    60,    61,   160,
       45,   169,    19,   116,    59,   121,   170,    40,     7,     8,
       39,   139,   140,   141,    33,    89,    16,   175,    60,    61,
-      24,   130,    27,    17,    56,   166,    18,   -93,   183,   -91,
-      91,   154,    91,   -93,    40,   -92,   173,    39,   148,   142,
+      24,   130,    27,    17,    56,   166,    18,   -94,   183,   -92,
+      91,   154,    91,   -94,    40,   -93,   173,    39,   148,   142,
      143,   144,   145,   146,    59,    40,    41,    -7,    39,   184,
      185,    30,    49,    99,    33,    28,    48,    -7,    60,    61,
      100,   101,    89,    54,    -7,    -7,    99,    31,    50,    32,
@@ -767,12 +767,12 @@ static const yytype_uint8 yyr1[] =
       53,    53,    53,    53,    54,    54,    55,    55,    56,    56,
       56,    57,    57,    58,    58,    59,    59,    60,    61,    62,
       63,    64,    64,    64,    65,    65,    66,    67,    68,    68,
-      69,    69,    69,    69,    69,    69,    69,    70,    70,    70,
-      71,    71,    72,    72,    73,    74,    74,    75,    75,    76,
-      76,    77,    77,    77,    77,    77,    78,    78,    78,    78,
-      78,    78,    79,    79,    79,    79,    79,    79,    80,    80,
-      80,    80,    80,    80,    81,    82,    83,    84,    85,    86,
-      87,    88,    89,    90,    91
+      68,    69,    69,    69,    69,    69,    69,    69,    70,    70,
+      70,    71,    71,    72,    72,    73,    74,    74,    75,    75,
+      76,    76,    77,    77,    77,    77,    77,    78,    78,    78,
+      78,    78,    78,    79,    79,    79,    79,    79,    79,    80,
+      80,    80,    80,    80,    80,    81,    82,    83,    84,    85,
+      86,    87,    88,    89,    90,    91
 };
 
   /* YYR2[YYN] -- Number of symbols on the right hand side of rule YYN.  */
@@ -782,12 +782,12 @@ static const yytype_uint8 yyr2[] =
        4,     4,     4,     4,     2,     0,     1,     2,     4,     9,
        9,     1,     0,     1,     2,     4,     4,     5,     7,     2,
        2,     3,     3,     0,     1,     3,     3,     3,     1,     3,
-       7,     5,     4,     3,     2,     1,     0,     1,     4,     4,
-       1,     4,     2,     0,     4,     2,     0,     1,     0,     1,
-       3,     1,     3,     3,     3,     3,     1,     2,     2,     3,
-       3,     3,     1,     3,     3,     3,     3,     3,     1,     1,
-       1,     1,     2,     3,     4,     1,     1,     1,     1,     1,
-       1,     1,     1,     1,     1
+       0,     7,     5,     4,     3,     2,     1,     0,     1,     4,
+       4,     1,     4,     2,     0,     4,     2,     0,     1,     0,
+       1,     3,     1,     3,     3,     3,     3,     1,     2,     2,
+       3,     3,     3,     1,     3,     3,     3,     3,     3,     1,
+       1,     1,     1,     2,     3,     4,     1,     1,     1,     1,
+       1,     1,     1,     1,     1,     1
 };
 
 
@@ -1675,37 +1675,50 @@ yyreduce:
                     // constant bar = foo;
                     // ...now, why would anyone want to do that?
                     /* Your code here */
-//                	position_information *pos = new position_information(@1.first_line, @1.first_column);
-//                	sym_tab->lookup_symbol($3->pool_p);
+                	position_information *pos = new position_information((yylsp[-3]).first_line, (yylsp[-3]).first_column);
+                	symbol *sym  = sym_tab->get_symbol((yyvsp[-1].id)->sym_p);
+                	if (sym == NULL) 
+                	{
+                		fatal("Constant symbol was NULL.");
+                	}
+                	else if(sym->type == integer_type) {
+                		
+                		constant_symbol *constant = sym->get_constant_symbol();
+                        sym_tab->enter_constant(pos, (yyvsp[-3].pool_p), constant->type, (constant->const_value.ival));
+                	}else if(sym->type == real_type) {
+                		
+                		constant_symbol *constant = sym->get_constant_symbol();
+                        sym_tab->enter_constant(pos, (yyvsp[-3].pool_p), constant->type, (constant->const_value.rval));
+                	}
                 	//TODO:whatwhat
                 }
-#line 1683 "parser.cc" /* yacc.c:1646  */
+#line 1696 "parser.cc" /* yacc.c:1646  */
     break;
 
   case 18:
-#line 257 "parser.y" /* yacc.c:1646  */
+#line 270 "parser.y" /* yacc.c:1646  */
     {
                     /* Your code here */
 					position_information *pos = new position_information((yylsp[-3]).first_line, (yylsp[-3]).first_column);
 	                	
 	                sym_index var_loc = sym_tab->enter_variable(pos, (yyvsp[-3].pool_p), (yyvsp[-1].id)->sym_p);
                 }
-#line 1694 "parser.cc" /* yacc.c:1646  */
+#line 1707 "parser.cc" /* yacc.c:1646  */
     break;
 
   case 19:
-#line 264 "parser.y" /* yacc.c:1646  */
+#line 277 "parser.y" /* yacc.c:1646  */
     {
                     /* Your code here */
                 	position_information *pos = new position_information((yylsp[-8]).first_line, (yylsp[-8]).first_column);
                 	
                 	sym_index var_loc = sym_tab->enter_array(pos, (yyvsp[-8].pool_p), (yyvsp[-1].id)->sym_p, (yyvsp[-4].integer)->value);
                 }
-#line 1705 "parser.cc" /* yacc.c:1646  */
+#line 1718 "parser.cc" /* yacc.c:1646  */
     break;
 
   case 20:
-#line 271 "parser.y" /* yacc.c:1646  */
+#line 284 "parser.y" /* yacc.c:1646  */
     {
                     // We enter an array: pool_pointer, type pointer,
                     // the id type of the constant, and the value of the
@@ -1753,11 +1766,11 @@ yyreduce:
                         }
                     }
                 }
-#line 1757 "parser.cc" /* yacc.c:1646  */
+#line 1770 "parser.cc" /* yacc.c:1646  */
     break;
 
   case 25:
-#line 333 "parser.y" /* yacc.c:1646  */
+#line 346 "parser.y" /* yacc.c:1646  */
     {
 
                     symbol *env = sym_tab->get_symbol((yyvsp[-3].procedure_head)->sym_p);
@@ -1805,11 +1818,11 @@ yyreduce:
                     // Close the current scope.
                     sym_tab->close_scope();
                 }
-#line 1809 "parser.cc" /* yacc.c:1646  */
+#line 1822 "parser.cc" /* yacc.c:1646  */
     break;
 
   case 26:
-#line 381 "parser.y" /* yacc.c:1646  */
+#line 394 "parser.y" /* yacc.c:1646  */
     {
 
                     symbol *env = sym_tab->get_symbol((yyvsp[-3].function_head)->sym_p);
@@ -1857,28 +1870,28 @@ yyreduce:
                     // Close the current scope.
                     sym_tab->close_scope();
                 }
-#line 1861 "parser.cc" /* yacc.c:1646  */
+#line 1874 "parser.cc" /* yacc.c:1646  */
     break;
 
   case 27:
-#line 432 "parser.y" /* yacc.c:1646  */
+#line 445 "parser.y" /* yacc.c:1646  */
     {
                     (yyval.procedure_head) = (yyvsp[-4].procedure_head);
                 }
-#line 1869 "parser.cc" /* yacc.c:1646  */
+#line 1882 "parser.cc" /* yacc.c:1646  */
     break;
 
   case 28:
-#line 439 "parser.y" /* yacc.c:1646  */
+#line 452 "parser.y" /* yacc.c:1646  */
     {
                     /* Your niko code here*/
                     (yyval.function_head) = (yyvsp[-6].function_head);
                 }
-#line 1878 "parser.cc" /* yacc.c:1646  */
+#line 1891 "parser.cc" /* yacc.c:1646  */
     break;
 
   case 29:
-#line 447 "parser.y" /* yacc.c:1646  */
+#line 460 "parser.y" /* yacc.c:1646  */
     {
                     position_information *pos =
                         new position_information((yylsp[-1]).first_line,
@@ -1895,11 +1908,11 @@ yyreduce:
                     (yyval.procedure_head) = new ast_procedurehead(pos,
                                                proc_loc);
                 }
-#line 1899 "parser.cc" /* yacc.c:1646  */
+#line 1912 "parser.cc" /* yacc.c:1646  */
     break;
 
   case 30:
-#line 467 "parser.y" /* yacc.c:1646  */
+#line 480 "parser.y" /* yacc.c:1646  */
     {
                     position_information *pos =
                         new position_information((yylsp[-1]).first_line,
@@ -1918,53 +1931,54 @@ yyreduce:
                     (yyval.function_head) = new ast_functionhead(pos,
                                               func_loc);
                 }
-#line 1922 "parser.cc" /* yacc.c:1646  */
+#line 1935 "parser.cc" /* yacc.c:1646  */
     break;
 
   case 31:
-#line 489 "parser.y" /* yacc.c:1646  */
+#line 502 "parser.y" /* yacc.c:1646  */
     {
                     /* Your code here */
 					(yyval.expression_list) = (yyvsp[-1].expression_list);
                 }
-#line 1931 "parser.cc" /* yacc.c:1646  */
+#line 1944 "parser.cc" /* yacc.c:1646  */
     break;
 
   case 32:
-#line 494 "parser.y" /* yacc.c:1646  */
+#line 507 "parser.y" /* yacc.c:1646  */
     {
                     (yyval.expression_list) = NULL;
                 }
-#line 1939 "parser.cc" /* yacc.c:1646  */
+#line 1952 "parser.cc" /* yacc.c:1646  */
     break;
 
   case 33:
-#line 498 "parser.y" /* yacc.c:1646  */
+#line 511 "parser.y" /* yacc.c:1646  */
     {
                     /* Your code here */
                 	// TODO
+                	(yyval.expression_list) = NULL;
                 }
-#line 1948 "parser.cc" /* yacc.c:1646  */
+#line 1962 "parser.cc" /* yacc.c:1646  */
     break;
 
   case 34:
-#line 506 "parser.y" /* yacc.c:1646  */
+#line 520 "parser.y" /* yacc.c:1646  */
     {
                     /* Note that we use expr_lists for parameters. This
                        is thus simply a place-holder in the grammar. */
                 }
-#line 1957 "parser.cc" /* yacc.c:1646  */
+#line 1971 "parser.cc" /* yacc.c:1646  */
     break;
 
   case 35:
-#line 511 "parser.y" /* yacc.c:1646  */
+#line 525 "parser.y" /* yacc.c:1646  */
     {
                 }
-#line 1964 "parser.cc" /* yacc.c:1646  */
+#line 1978 "parser.cc" /* yacc.c:1646  */
     break;
 
   case 36:
-#line 517 "parser.y" /* yacc.c:1646  */
+#line 531 "parser.y" /* yacc.c:1646  */
     {
                     position_information *pos =
                         new position_information((yylsp[-2]).first_line,
@@ -1979,467 +1993,487 @@ yyreduce:
                                                  (yyvsp[-2].pool_p),
                                                  (yyvsp[0].id)->sym_p);
                 }
-#line 1983 "parser.cc" /* yacc.c:1646  */
+#line 1997 "parser.cc" /* yacc.c:1646  */
     break;
 
   case 37:
-#line 535 "parser.y" /* yacc.c:1646  */
+#line 549 "parser.y" /* yacc.c:1646  */
     {
                     /* Your code here */
-					(yyval.statement_list) = (yyvsp[-1].statement_list); // TODO: wat is comp?
+					cout << "########## comp_stmt : " << endl;
+					(yyval.statement_list) = (yyvsp[-1].statement_list); // TODO: wat is comp? complete?
                 }
-#line 1992 "parser.cc" /* yacc.c:1646  */
+#line 2007 "parser.cc" /* yacc.c:1646  */
     break;
 
   case 38:
-#line 543 "parser.y" /* yacc.c:1646  */
+#line 558 "parser.y" /* yacc.c:1646  */
     {
                     /* Your code here */
 					position_information *pos = new position_information((yylsp[0]).first_line, (yylsp[0]).first_column);
-					(yyval.statement_list) = new ast_stmt_list(pos, (yyvsp[0].statement));
+					if ((yyvsp[0].statement) == NULL) (yyval.statement_list) = NULL;  
+					else (yyval.statement_list) = new ast_stmt_list(pos, (yyvsp[0].statement));
+					cout<< "################ convert: \n" << (yyval.statement_list) << endl;
                 }
-#line 2002 "parser.cc" /* yacc.c:1646  */
+#line 2019 "parser.cc" /* yacc.c:1646  */
     break;
 
   case 39:
-#line 549 "parser.y" /* yacc.c:1646  */
+#line 566 "parser.y" /* yacc.c:1646  */
     {
                     /* Your code here */
 					position_information *pos = new position_information((yylsp[-2]).first_line, (yylsp[-2]).first_column);
 					(yyval.statement_list) = new ast_stmt_list(pos, (yyvsp[0].statement), (yyvsp[-2].statement_list));
+					cout << "################ combine: \n" <<  (yyval.statement_list) << endl;
+//					cout << "################stmt_list: \n" << $3 << endl;
                 }
-#line 2012 "parser.cc" /* yacc.c:1646  */
+#line 2031 "parser.cc" /* yacc.c:1646  */
     break;
 
   case 40:
-#line 558 "parser.y" /* yacc.c:1646  */
+#line 574 "parser.y" /* yacc.c:1646  */
+    {
+                                    /* Your code here */
+                                	// TODO
+                                	(yyval.statement_list) = NULL;
+                                }
+#line 2041 "parser.cc" /* yacc.c:1646  */
+    break;
+
+  case 41:
+#line 583 "parser.y" /* yacc.c:1646  */
     {
                     /* Your code here */
 					position_information *pos = new position_information((yylsp[-6]).first_line, (yylsp[-6]).first_column);
 					(yyval.statement) = new ast_if(pos, (yyvsp[-5].expression), (yyvsp[-3].statement_list), (yyvsp[-2].elsif_list), (yyvsp[-1].statement_list));
                 }
-#line 2022 "parser.cc" /* yacc.c:1646  */
+#line 2051 "parser.cc" /* yacc.c:1646  */
     break;
 
-  case 41:
-#line 564 "parser.y" /* yacc.c:1646  */
+  case 42:
+#line 589 "parser.y" /* yacc.c:1646  */
     {
                     /* Your code here */
                 	position_information *pos = new position_information((yylsp[-4]).first_line, (yylsp[-4]).first_column);
 					(yyval.statement) = new ast_while(pos, (yyvsp[-3].expression), (yyvsp[-1].statement_list));
                 }
-#line 2032 "parser.cc" /* yacc.c:1646  */
+#line 2061 "parser.cc" /* yacc.c:1646  */
     break;
 
-  case 42:
-#line 570 "parser.y" /* yacc.c:1646  */
+  case 43:
+#line 595 "parser.y" /* yacc.c:1646  */
     {
                     /* Your code here */
                 	position_information *pos = new position_information((yylsp[-3]).first_line, (yylsp[-3]).first_column);
 					(yyval.statement) = new ast_procedurecall(pos, (yyvsp[-3].id), (yyvsp[-1].expression_list));
                 }
-#line 2042 "parser.cc" /* yacc.c:1646  */
+#line 2071 "parser.cc" /* yacc.c:1646  */
     break;
 
-  case 43:
-#line 576 "parser.y" /* yacc.c:1646  */
+  case 44:
+#line 601 "parser.y" /* yacc.c:1646  */
     {
                     /* Your code here */
                 	position_information *pos = new position_information((yylsp[-2]).first_line, (yylsp[-2]).first_column);
 					(yyval.statement) = new ast_assign(pos, (yyvsp[-2].lvalue), (yyvsp[0].expression));
                 }
-#line 2052 "parser.cc" /* yacc.c:1646  */
+#line 2081 "parser.cc" /* yacc.c:1646  */
     break;
 
-  case 44:
-#line 582 "parser.y" /* yacc.c:1646  */
+  case 45:
+#line 607 "parser.y" /* yacc.c:1646  */
     {
                     /* Your code here */
                 	position_information *pos = new position_information((yylsp[-1]).first_line, (yylsp[-1]).first_column);
 					(yyval.statement) = new ast_return(pos, (yyvsp[0].expression));
                 }
-#line 2062 "parser.cc" /* yacc.c:1646  */
+#line 2091 "parser.cc" /* yacc.c:1646  */
     break;
 
-  case 45:
-#line 588 "parser.y" /* yacc.c:1646  */
+  case 46:
+#line 613 "parser.y" /* yacc.c:1646  */
     {
                     /* Your code here */
                 	position_information *pos = new position_information((yylsp[0]).first_line, (yylsp[0]).first_column);
 					(yyval.statement) = new ast_return(pos);
                 }
-#line 2072 "parser.cc" /* yacc.c:1646  */
-    break;
-
-  case 46:
-#line 595 "parser.y" /* yacc.c:1646  */
-    {
-                    /* Your code here */
-                	// TODO
-                }
-#line 2081 "parser.cc" /* yacc.c:1646  */
+#line 2101 "parser.cc" /* yacc.c:1646  */
     break;
 
   case 47:
-#line 602 "parser.y" /* yacc.c:1646  */
+#line 620 "parser.y" /* yacc.c:1646  */
     {
-                    (yyval.lvalue) = (yyvsp[0].id);
+                    /* Your code here */
+                	// TODO
+                	(yyval.statement) = NULL;
                 }
-#line 2089 "parser.cc" /* yacc.c:1646  */
+#line 2111 "parser.cc" /* yacc.c:1646  */
     break;
 
   case 48:
-#line 606 "parser.y" /* yacc.c:1646  */
+#line 628 "parser.y" /* yacc.c:1646  */
+    {
+                    (yyval.lvalue) = (yyvsp[0].id);
+                }
+#line 2119 "parser.cc" /* yacc.c:1646  */
+    break;
+
+  case 49:
+#line 632 "parser.y" /* yacc.c:1646  */
     {
                     (yyval.lvalue) = new ast_indexed((yyvsp[-3].id)->pos,
                                          (yyvsp[-3].id),
                                          (yyvsp[-1].expression));
                 }
-#line 2099 "parser.cc" /* yacc.c:1646  */
-    break;
-
-  case 49:
-#line 612 "parser.y" /* yacc.c:1646  */
-    {
-                    (yyval.lvalue) = NULL;
-                }
-#line 2107 "parser.cc" /* yacc.c:1646  */
+#line 2129 "parser.cc" /* yacc.c:1646  */
     break;
 
   case 50:
-#line 619 "parser.y" /* yacc.c:1646  */
+#line 638 "parser.y" /* yacc.c:1646  */
+    {
+                    (yyval.lvalue) = NULL;
+                }
+#line 2137 "parser.cc" /* yacc.c:1646  */
+    break;
+
+  case 51:
+#line 645 "parser.y" /* yacc.c:1646  */
     {
                     /* Your code here */
 					(yyval.expression) = (yyvsp[0].id);
                 }
-#line 2116 "parser.cc" /* yacc.c:1646  */
+#line 2146 "parser.cc" /* yacc.c:1646  */
     break;
 
-  case 51:
-#line 624 "parser.y" /* yacc.c:1646  */
+  case 52:
+#line 650 "parser.y" /* yacc.c:1646  */
     {
                     /* Your code here */
                 	(yyval.expression) = new ast_indexed((yyvsp[-3].id)->pos, (yyvsp[-3].id), (yyvsp[-1].expression));
                 	// TODO: ??
+                	//TODO:
                 }
-#line 2126 "parser.cc" /* yacc.c:1646  */
+#line 2157 "parser.cc" /* yacc.c:1646  */
     break;
 
-  case 52:
-#line 634 "parser.y" /* yacc.c:1646  */
+  case 53:
+#line 661 "parser.y" /* yacc.c:1646  */
     {
                     /* Your code here */
 						position_information *pos = new position_information((yylsp[-1]).first_line, (yylsp[-1]).first_column);
 						(yyval.elsif_list) = new ast_elsif_list(pos, (yyvsp[0].elsif), (yyvsp[-1].elsif_list));
                 }
-#line 2136 "parser.cc" /* yacc.c:1646  */
-    break;
-
-  case 53:
-#line 640 "parser.y" /* yacc.c:1646  */
-    {
-                    /* Your code here */
-                	//TODO:
-                }
-#line 2145 "parser.cc" /* yacc.c:1646  */
+#line 2167 "parser.cc" /* yacc.c:1646  */
     break;
 
   case 54:
-#line 648 "parser.y" /* yacc.c:1646  */
+#line 667 "parser.y" /* yacc.c:1646  */
+    {
+                    /* Your code here */
+                	//TODO:
+                	(yyval.elsif_list) = NULL;
+                }
+#line 2177 "parser.cc" /* yacc.c:1646  */
+    break;
+
+  case 55:
+#line 676 "parser.y" /* yacc.c:1646  */
     {
                     /* Your code here */
 					position_information *pos = new position_information((yylsp[-3]).first_line, (yylsp[-3]).first_column);
 					(yyval.elsif) = new ast_elsif(pos, (yyvsp[-2].expression), (yyvsp[0].statement_list));
 	                	                	
                 }
-#line 2156 "parser.cc" /* yacc.c:1646  */
+#line 2188 "parser.cc" /* yacc.c:1646  */
     break;
 
-  case 55:
-#line 658 "parser.y" /* yacc.c:1646  */
+  case 56:
+#line 686 "parser.y" /* yacc.c:1646  */
     {
                     /* Your code here */
 					(yyval.statement_list) = (yyvsp[0].statement_list);
                 }
-#line 2165 "parser.cc" /* yacc.c:1646  */
-    break;
-
-  case 56:
-#line 663 "parser.y" /* yacc.c:1646  */
-    {
-                    /* Your code here */
-                	//TODO:fråga olle
-                }
-#line 2174 "parser.cc" /* yacc.c:1646  */
+#line 2197 "parser.cc" /* yacc.c:1646  */
     break;
 
   case 57:
-#line 671 "parser.y" /* yacc.c:1646  */
+#line 691 "parser.y" /* yacc.c:1646  */
+    {
+                    /* Your code here */
+                	//TODO:fråga olle
+                	(yyval.statement_list) = NULL;
+                }
+#line 2207 "parser.cc" /* yacc.c:1646  */
+    break;
+
+  case 58:
+#line 700 "parser.y" /* yacc.c:1646  */
     {
                     /* Your code here */
 					(yyval.expression_list) = (yyvsp[0].expression_list);
                 }
-#line 2183 "parser.cc" /* yacc.c:1646  */
-    break;
-
-  case 58:
-#line 676 "parser.y" /* yacc.c:1646  */
-    {
-                    /* Your code here */
-                	// TODO: fråga.
-                }
-#line 2192 "parser.cc" /* yacc.c:1646  */
+#line 2216 "parser.cc" /* yacc.c:1646  */
     break;
 
   case 59:
-#line 684 "parser.y" /* yacc.c:1646  */
+#line 705 "parser.y" /* yacc.c:1646  */
+    {
+                    /* Your code here */
+                	// TODO: fråga.
+                	(yyval.expression_list) = NULL;
+                }
+#line 2226 "parser.cc" /* yacc.c:1646  */
+    break;
+
+  case 60:
+#line 714 "parser.y" /* yacc.c:1646  */
     {
                     /* Your code here */
 					position_information *pos = new position_information((yylsp[0]).first_line, (yylsp[0]).first_column);
 					(yyval.expression_list) = new ast_expr_list(pos, (yyvsp[0].expression));
                 }
-#line 2202 "parser.cc" /* yacc.c:1646  */
+#line 2236 "parser.cc" /* yacc.c:1646  */
     break;
 
-  case 60:
-#line 690 "parser.y" /* yacc.c:1646  */
+  case 61:
+#line 720 "parser.y" /* yacc.c:1646  */
     {
                     /* Your code here */
                 	position_information *pos = new position_information((yylsp[-2]).first_line, (yylsp[-2]).first_column);
                 	                	(yyval.expression_list) = new ast_expr_list(pos, (yyvsp[0].expression), (yyvsp[-2].expression_list));
                 }
-#line 2212 "parser.cc" /* yacc.c:1646  */
+#line 2246 "parser.cc" /* yacc.c:1646  */
     break;
 
-  case 61:
-#line 699 "parser.y" /* yacc.c:1646  */
+  case 62:
+#line 729 "parser.y" /* yacc.c:1646  */
     {
                     /* Your code here */
 					(yyval.expression) = (yyvsp[0].expression);
                 }
-#line 2221 "parser.cc" /* yacc.c:1646  */
+#line 2255 "parser.cc" /* yacc.c:1646  */
     break;
 
-  case 62:
-#line 704 "parser.y" /* yacc.c:1646  */
+  case 63:
+#line 734 "parser.y" /* yacc.c:1646  */
     {
                     /* Your code here */
                 	position_information *pos = new position_information((yylsp[-2]).first_line, (yylsp[-2]).first_column);
                 	(yyval.expression) = new ast_equal(pos, (yyvsp[-2].expression), (yyvsp[0].expression));
                 }
-#line 2231 "parser.cc" /* yacc.c:1646  */
+#line 2265 "parser.cc" /* yacc.c:1646  */
     break;
 
-  case 63:
-#line 710 "parser.y" /* yacc.c:1646  */
+  case 64:
+#line 740 "parser.y" /* yacc.c:1646  */
     {
                     /* Your code here */
                 	position_information *pos = new position_information((yylsp[-2]).first_line, (yylsp[-2]).first_column);
                 	(yyval.expression) = new ast_notequal(pos, (yyvsp[-2].expression), (yyvsp[0].expression));
                 }
-#line 2241 "parser.cc" /* yacc.c:1646  */
+#line 2275 "parser.cc" /* yacc.c:1646  */
     break;
 
-  case 64:
-#line 716 "parser.y" /* yacc.c:1646  */
+  case 65:
+#line 746 "parser.y" /* yacc.c:1646  */
     {
                     /* Your code here */
                 	position_information *pos = new position_information((yylsp[-2]).first_line, (yylsp[-2]).first_column);
                 	(yyval.expression) = new ast_lessthan(pos, (yyvsp[-2].expression), (yyvsp[0].expression));
                 }
-#line 2251 "parser.cc" /* yacc.c:1646  */
+#line 2285 "parser.cc" /* yacc.c:1646  */
     break;
 
-  case 65:
-#line 722 "parser.y" /* yacc.c:1646  */
+  case 66:
+#line 752 "parser.y" /* yacc.c:1646  */
     {
                     /* Your code here */
                 	position_information *pos = new position_information((yylsp[-2]).first_line, (yylsp[-2]).first_column);
                 	(yyval.expression) = new ast_greaterthan(pos, (yyvsp[-2].expression), (yyvsp[0].expression));
                 }
-#line 2261 "parser.cc" /* yacc.c:1646  */
+#line 2295 "parser.cc" /* yacc.c:1646  */
     break;
 
-  case 66:
-#line 731 "parser.y" /* yacc.c:1646  */
+  case 67:
+#line 761 "parser.y" /* yacc.c:1646  */
     {
                     /* Your code here */
 					(yyval.expression) = (yyvsp[0].expression);
                 }
-#line 2270 "parser.cc" /* yacc.c:1646  */
+#line 2304 "parser.cc" /* yacc.c:1646  */
     break;
 
-  case 67:
-#line 736 "parser.y" /* yacc.c:1646  */
+  case 68:
+#line 766 "parser.y" /* yacc.c:1646  */
     {
                     /* Your code here */
                 	//position_information *pos = new position_information(@1.first_line, @1.first_column);
                 	fatal("Unary plus not allowed."); // TODO
                 }
-#line 2280 "parser.cc" /* yacc.c:1646  */
+#line 2314 "parser.cc" /* yacc.c:1646  */
     break;
 
-  case 68:
-#line 742 "parser.y" /* yacc.c:1646  */
+  case 69:
+#line 772 "parser.y" /* yacc.c:1646  */
     {
                 	position_information *pos = new position_information((yylsp[-1]).first_line, (yylsp[-1]).first_column);
                 	(yyval.expression) = new ast_uminus(pos, (yyvsp[0].expression));
                 }
-#line 2289 "parser.cc" /* yacc.c:1646  */
+#line 2323 "parser.cc" /* yacc.c:1646  */
     break;
 
-  case 69:
-#line 747 "parser.y" /* yacc.c:1646  */
+  case 70:
+#line 777 "parser.y" /* yacc.c:1646  */
     {
                     /* Your code here */
                 	position_information *pos = new position_information((yylsp[-2]).first_line, (yylsp[-2]).first_column);
 					(yyval.expression) = new ast_or(pos, (yyvsp[-2].expression), (yyvsp[0].expression));
                 }
-#line 2299 "parser.cc" /* yacc.c:1646  */
+#line 2333 "parser.cc" /* yacc.c:1646  */
     break;
 
-  case 70:
-#line 753 "parser.y" /* yacc.c:1646  */
+  case 71:
+#line 783 "parser.y" /* yacc.c:1646  */
     {
                     /* Your code here */
                 	position_information *pos = new position_information((yylsp[-2]).first_line, (yylsp[-2]).first_column);
                 	(yyval.expression) = new ast_add(pos, (yyvsp[-2].expression), (yyvsp[0].expression));
                 }
-#line 2309 "parser.cc" /* yacc.c:1646  */
+#line 2343 "parser.cc" /* yacc.c:1646  */
     break;
 
-  case 71:
-#line 759 "parser.y" /* yacc.c:1646  */
+  case 72:
+#line 789 "parser.y" /* yacc.c:1646  */
     {
                     /* Your code here */
                 	position_information *pos = new position_information((yylsp[-2]).first_line, (yylsp[-2]).first_column);
                 	(yyval.expression) = new ast_sub(pos, (yyvsp[-2].expression), (yyvsp[0].expression));
                 }
-#line 2319 "parser.cc" /* yacc.c:1646  */
+#line 2353 "parser.cc" /* yacc.c:1646  */
     break;
 
-  case 72:
-#line 768 "parser.y" /* yacc.c:1646  */
+  case 73:
+#line 798 "parser.y" /* yacc.c:1646  */
     {
                     /* Your code here */
 					(yyval.expression) = (yyvsp[0].expression);
                 }
-#line 2328 "parser.cc" /* yacc.c:1646  */
+#line 2362 "parser.cc" /* yacc.c:1646  */
     break;
 
-  case 73:
-#line 773 "parser.y" /* yacc.c:1646  */
+  case 74:
+#line 803 "parser.y" /* yacc.c:1646  */
     {
                     /* Your code here */
                 	position_information *pos = new position_information((yylsp[-2]).first_line, (yylsp[-2]).first_column);
                 	(yyval.expression) = new ast_and(pos, (yyvsp[-2].expression), (yyvsp[0].expression));
                 }
-#line 2338 "parser.cc" /* yacc.c:1646  */
+#line 2372 "parser.cc" /* yacc.c:1646  */
     break;
 
-  case 74:
-#line 779 "parser.y" /* yacc.c:1646  */
+  case 75:
+#line 809 "parser.y" /* yacc.c:1646  */
     {
                     /* Your code here */
                 	position_information *pos = new position_information((yylsp[-2]).first_line, (yylsp[-2]).first_column);
                 	                	(yyval.expression) = new ast_mult(pos, (yyvsp[-2].expression), (yyvsp[0].expression));
                 }
-#line 2348 "parser.cc" /* yacc.c:1646  */
+#line 2382 "parser.cc" /* yacc.c:1646  */
     break;
 
-  case 75:
-#line 785 "parser.y" /* yacc.c:1646  */
+  case 76:
+#line 815 "parser.y" /* yacc.c:1646  */
     {
                     /* Your code here */
                 	position_information *pos = new position_information((yylsp[-2]).first_line, (yylsp[-2]).first_column);
                 	                	(yyval.expression) = new ast_divide(pos, (yyvsp[-2].expression), (yyvsp[0].expression));
                 }
-#line 2358 "parser.cc" /* yacc.c:1646  */
+#line 2392 "parser.cc" /* yacc.c:1646  */
     break;
 
-  case 76:
-#line 791 "parser.y" /* yacc.c:1646  */
+  case 77:
+#line 821 "parser.y" /* yacc.c:1646  */
     {
                     /* Your code here */
                 	position_information *pos = new position_information((yylsp[-2]).first_line, (yylsp[-2]).first_column);
                 	                	(yyval.expression) = new ast_idiv(pos, (yyvsp[-2].expression), (yyvsp[0].expression));
                 }
-#line 2368 "parser.cc" /* yacc.c:1646  */
+#line 2402 "parser.cc" /* yacc.c:1646  */
     break;
 
-  case 77:
-#line 797 "parser.y" /* yacc.c:1646  */
+  case 78:
+#line 827 "parser.y" /* yacc.c:1646  */
     {
                     /* Your code here */
                 	position_information *pos = new position_information((yylsp[-2]).first_line, (yylsp[-2]).first_column);
                 	                	(yyval.expression) = new ast_mod(pos, (yyvsp[-2].expression), (yyvsp[0].expression));
                 }
-#line 2378 "parser.cc" /* yacc.c:1646  */
-    break;
-
-  case 78:
-#line 806 "parser.y" /* yacc.c:1646  */
-    {
-                    (yyval.expression) = (yyvsp[0].expression);
-                }
-#line 2386 "parser.cc" /* yacc.c:1646  */
+#line 2412 "parser.cc" /* yacc.c:1646  */
     break;
 
   case 79:
-#line 810 "parser.y" /* yacc.c:1646  */
+#line 836 "parser.y" /* yacc.c:1646  */
     {
-                    (yyval.expression) = (yyvsp[0].function_call);
+                    (yyval.expression) = (yyvsp[0].expression);
                 }
-#line 2394 "parser.cc" /* yacc.c:1646  */
+#line 2420 "parser.cc" /* yacc.c:1646  */
     break;
 
   case 80:
-#line 814 "parser.y" /* yacc.c:1646  */
+#line 840 "parser.y" /* yacc.c:1646  */
     {
-                    (yyval.expression) = (yyvsp[0].integer);
+                    (yyval.expression) = (yyvsp[0].function_call);
                 }
-#line 2402 "parser.cc" /* yacc.c:1646  */
+#line 2428 "parser.cc" /* yacc.c:1646  */
     break;
 
   case 81:
-#line 818 "parser.y" /* yacc.c:1646  */
+#line 844 "parser.y" /* yacc.c:1646  */
     {
-                    (yyval.expression) = (yyvsp[0].real);
+                    (yyval.expression) = (yyvsp[0].integer);
                 }
-#line 2410 "parser.cc" /* yacc.c:1646  */
+#line 2436 "parser.cc" /* yacc.c:1646  */
     break;
 
   case 82:
-#line 822 "parser.y" /* yacc.c:1646  */
+#line 848 "parser.y" /* yacc.c:1646  */
+    {
+                    (yyval.expression) = (yyvsp[0].real);
+                }
+#line 2444 "parser.cc" /* yacc.c:1646  */
+    break;
+
+  case 83:
+#line 852 "parser.y" /* yacc.c:1646  */
     {
                     /* Your code here */
                 	position_information *pos = new position_information((yylsp[-1]).first_line, (yylsp[-1]).first_column);
                 	(yyval.expression) = new ast_not(pos, (yyvsp[0].expression));//TODO: Dunno whats going on here...
                 }
-#line 2420 "parser.cc" /* yacc.c:1646  */
+#line 2454 "parser.cc" /* yacc.c:1646  */
     break;
 
-  case 83:
-#line 828 "parser.y" /* yacc.c:1646  */
+  case 84:
+#line 858 "parser.y" /* yacc.c:1646  */
     {
                     /* Your code here */
                 	(yyval.expression) = (yyvsp[-1].expression);
                 }
-#line 2429 "parser.cc" /* yacc.c:1646  */
+#line 2463 "parser.cc" /* yacc.c:1646  */
     break;
 
-  case 84:
-#line 837 "parser.y" /* yacc.c:1646  */
+  case 85:
+#line 867 "parser.y" /* yacc.c:1646  */
     {
                     /* Your code here */
 					position_information *pos = new position_information((yylsp[-3]).first_line, (yylsp[-3]).first_column);
 					(yyval.function_call) = new ast_functioncall(pos, (yyvsp[-3].id), (yyvsp[-1].expression_list));
                 }
-#line 2439 "parser.cc" /* yacc.c:1646  */
+#line 2473 "parser.cc" /* yacc.c:1646  */
     break;
 
-  case 85:
-#line 847 "parser.y" /* yacc.c:1646  */
+  case 86:
+#line 877 "parser.y" /* yacc.c:1646  */
     {
                     position_information *pos =
                         new position_information((yylsp[0]).first_line,
@@ -2449,11 +2483,11 @@ yyreduce:
                     (yyval.integer) = new ast_integer(pos,
                                          (yyvsp[0].ival));
                 }
-#line 2453 "parser.cc" /* yacc.c:1646  */
+#line 2487 "parser.cc" /* yacc.c:1646  */
     break;
 
-  case 86:
-#line 860 "parser.y" /* yacc.c:1646  */
+  case 87:
+#line 890 "parser.y" /* yacc.c:1646  */
     {
                     position_information *pos =
                         new position_information((yylsp[0]).first_line,
@@ -2463,11 +2497,11 @@ yyreduce:
                     (yyval.real) = new ast_real(pos,
                                       (yyvsp[0].rval));
                 }
-#line 2467 "parser.cc" /* yacc.c:1646  */
+#line 2501 "parser.cc" /* yacc.c:1646  */
     break;
 
-  case 87:
-#line 873 "parser.y" /* yacc.c:1646  */
+  case 88:
+#line 903 "parser.y" /* yacc.c:1646  */
     {
                     // Make sure this id is really declared as a type.
                     // debug() << "type_id -> id: "
@@ -2479,11 +2513,11 @@ yyreduce:
                     }
                     (yyval.id) = (yyvsp[0].id);
                 }
-#line 2483 "parser.cc" /* yacc.c:1646  */
+#line 2517 "parser.cc" /* yacc.c:1646  */
     break;
 
-  case 88:
-#line 888 "parser.y" /* yacc.c:1646  */
+  case 89:
+#line 918 "parser.y" /* yacc.c:1646  */
     {
                     // Make sure this id is really declared as a constant.
                     // debug() << "const_id -> id: " << $1->sym_p << endl;
@@ -2494,11 +2528,11 @@ yyreduce:
                     }
                     (yyval.id) = (yyvsp[0].id);
                 }
-#line 2498 "parser.cc" /* yacc.c:1646  */
+#line 2532 "parser.cc" /* yacc.c:1646  */
     break;
 
-  case 89:
-#line 902 "parser.y" /* yacc.c:1646  */
+  case 90:
+#line 932 "parser.y" /* yacc.c:1646  */
     {
                     // Make sure this id is really declared as an lvariable.
                     // debug() << "lvar_id -> id: " << $1->sym_p << endl;
@@ -2510,11 +2544,11 @@ yyreduce:
                     }
                     (yyval.id) = (yyvsp[0].id);
                 }
-#line 2514 "parser.cc" /* yacc.c:1646  */
+#line 2548 "parser.cc" /* yacc.c:1646  */
     break;
 
-  case 90:
-#line 915 "parser.y" /* yacc.c:1646  */
+  case 91:
+#line 945 "parser.y" /* yacc.c:1646  */
     {
                     // Make sure this id is really declared as an rvariable.
                     // debug() << "rvar_id -> id: " << $1->sym_p << endl;
@@ -2528,11 +2562,11 @@ yyreduce:
                     }
                     (yyval.id) = (yyvsp[0].id);
                 }
-#line 2532 "parser.cc" /* yacc.c:1646  */
+#line 2566 "parser.cc" /* yacc.c:1646  */
     break;
 
-  case 91:
-#line 932 "parser.y" /* yacc.c:1646  */
+  case 92:
+#line 962 "parser.y" /* yacc.c:1646  */
     {
                     // Make sure this id is really declared as a procedure.
                     // debug() << "proc_id -> id: " << $1->sym_p << endl;
@@ -2543,11 +2577,11 @@ yyreduce:
                     }
                     (yyval.id) = (yyvsp[0].id);
                 }
-#line 2547 "parser.cc" /* yacc.c:1646  */
+#line 2581 "parser.cc" /* yacc.c:1646  */
     break;
 
-  case 92:
-#line 946 "parser.y" /* yacc.c:1646  */
+  case 93:
+#line 976 "parser.y" /* yacc.c:1646  */
     {
                     // Make sure this id is really declared as a function.
                     // debug() << "func_id -> id: " << $1->sym_p << endl;
@@ -2558,11 +2592,11 @@ yyreduce:
                     }
                     (yyval.id) = (yyvsp[0].id);
                 }
-#line 2562 "parser.cc" /* yacc.c:1646  */
+#line 2596 "parser.cc" /* yacc.c:1646  */
     break;
 
-  case 93:
-#line 960 "parser.y" /* yacc.c:1646  */
+  case 94:
+#line 990 "parser.y" /* yacc.c:1646  */
     {
                     // Make sure this id is really declared as an array.
                     // debug() << "array_id -> id: " << $1->sym_p << endl;
@@ -2573,11 +2607,11 @@ yyreduce:
                     }
                     (yyval.id) = (yyvsp[0].id);
                 }
-#line 2577 "parser.cc" /* yacc.c:1646  */
+#line 2611 "parser.cc" /* yacc.c:1646  */
     break;
 
-  case 94:
-#line 974 "parser.y" /* yacc.c:1646  */
+  case 95:
+#line 1004 "parser.y" /* yacc.c:1646  */
     {
                     sym_index sym_p;    // Used to find previous use of symbol.
                     position_information *pos =
@@ -2597,11 +2631,11 @@ yyreduce:
                                     sym_p);
                     (yyval.id)->type = sym_tab->get_symbol_type(sym_p);
                 }
-#line 2601 "parser.cc" /* yacc.c:1646  */
+#line 2635 "parser.cc" /* yacc.c:1646  */
     break;
 
 
-#line 2605 "parser.cc" /* yacc.c:1646  */
+#line 2639 "parser.cc" /* yacc.c:1646  */
       default: break;
     }
   /* User semantic actions sometimes alter yychar, and that requires
@@ -2836,5 +2870,5 @@ yyreturn:
 #endif
   return yyresult;
 }
-#line 996 "parser.y" /* yacc.c:1906  */
+#line 1026 "parser.y" /* yacc.c:1906  */
 

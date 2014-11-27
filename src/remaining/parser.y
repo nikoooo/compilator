@@ -235,8 +235,21 @@ const_decl      : T_IDENT T_EQ integer T_SEMICOLON
                     // constant bar = foo;
                     // ...now, why would anyone want to do that?
                     /* Your code here */
-//                	position_information *pos = new position_information(@1.first_line, @1.first_column);
-//                	sym_tab->lookup_symbol($3->pool_p);
+                	position_information *pos = new position_information(@1.first_line, @1.first_column);
+                	symbol *sym  = sym_tab->get_symbol($3->sym_p);
+                	if (sym == NULL) 
+                	{
+                		fatal("Constant symbol was NULL.");
+                	}
+                	else if(sym->type == integer_type) {
+                		
+                		constant_symbol *constant = sym->get_constant_symbol();
+                        sym_tab->enter_constant(pos, $1, constant->type, (constant->const_value.ival));
+                	}else if(sym->type == real_type) {
+                		
+                		constant_symbol *constant = sym->get_constant_symbol();
+                        sym_tab->enter_constant(pos, $1, constant->type, (constant->const_value.rval));
+                	}
                 	//TODO:whatwhat
                 }
                 
@@ -498,6 +511,7 @@ opt_param_list  : T_LEFTPAR param_list T_RIGHTPAR
                 {
                     /* Your code here */
                 	// TODO
+                	$$ = NULL;
                 }
                 ;
 
@@ -534,7 +548,8 @@ param           : T_IDENT T_COLON type_id
 comp_stmt       : T_BEGIN stmt_list T_END
                 {
                     /* Your code here */
-					$$ = $2; // TODO: wat is comp?
+					cout << "########## comp_stmt : " << endl;
+					$$ = $2; // TODO: wat is comp? complete?
                 }
                 ;
 
@@ -543,13 +558,17 @@ stmt_list       : stmt
                 {
                     /* Your code here */
 					position_information *pos = new position_information(@1.first_line, @1.first_column);
-					$$ = new ast_stmt_list(pos, $1);
+					if ($1 == NULL) $$ = NULL;  
+					else $$ = new ast_stmt_list(pos, $1);
+					cout<< "################ convert: \n" << $$ << endl;
                 }
                 | stmt_list T_SEMICOLON stmt
                 {
                     /* Your code here */
 					position_information *pos = new position_information(@1.first_line, @1.first_column);
 					$$ = new ast_stmt_list(pos, $3, $1);
+					cout << "################ combine: \n" <<  $$ << endl;
+//					cout << "################stmt_list: \n" << $3 << endl;
                 }
                 ;
 
@@ -595,6 +614,7 @@ stmt            : T_IF expr T_THEN stmt_list elsif_list else_part T_END
                 {
                     /* Your code here */
                 	// TODO
+                	$$ = NULL;
                 }
                 ;
 
@@ -625,6 +645,7 @@ rvariable       : rvar_id
                     /* Your code here */
                 	$$ = new ast_indexed($1->pos, $1, $3);
                 	// TODO: ??
+                	//TODO:
                 }
                 
                 ;
@@ -640,6 +661,7 @@ elsif_list      : elsif_list elsif
                 {
                     /* Your code here */
                 	//TODO:
+                	$$ = NULL;
                 }
                 ;
 
@@ -663,6 +685,7 @@ else_part       : T_ELSE stmt_list
                 {
                     /* Your code here */
                 	//TODO:fråga olle
+                	$$ = NULL;
                 }
                 ;
 
@@ -676,6 +699,7 @@ opt_expr_list   : expr_list
                 {
                     /* Your code here */
                 	// TODO: fråga.
+                	$$ = NULL;
                 }
                 ;
 
