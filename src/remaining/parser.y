@@ -560,15 +560,15 @@ stmt_list       : stmt
 					position_information *pos = new position_information(@1.first_line, @1.first_column);
 					if ($1 == NULL) $$ = NULL;  
 					else $$ = new ast_stmt_list(pos, $1);
-					cout<< "################ convert: \n" << $$ << endl;
+					cout<< "Statementlist found, composed to: $$ = " << $$ << "<-   " << $1 << endl;
                 }
                 | stmt_list T_SEMICOLON stmt
                 {
                     /* Your code here */
 					position_information *pos = new position_information(@1.first_line, @1.first_column);
 					$$ = new ast_stmt_list(pos, $3, $1);
-					cout << "################ combine: \n" <<  $$ << endl;
-//					cout << "################stmt_list: \n" << $3 << endl;
+				    cout<< "Statementlist found, composed of statementList;STMT: $$ = " << $$ << "<-   " << $1 << " + " << $3 << endl;
+
                 }
                 ;
 
