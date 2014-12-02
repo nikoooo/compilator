@@ -451,6 +451,16 @@ proc_decl       : proc_head opt_param_list T_SEMICOLON const_part variable_part
 func_decl       : func_head opt_param_list T_COLON type_id T_SEMICOLON const_part variable_part
                 {
                     /* Your niko code here*/
+              	 	symbol *type_sym  = sym_tab->get_symbol($4->sym_p);
+                	symbol *sym  = sym_tab->get_symbol($1->sym_p);
+
+			std::string type_str = sym_tab->pool_lookup(type_sym->id);
+			 if(type_str == "INTEGER")
+                		sym->type = integer_type;
+			 else if(type_str == "REAL")
+                		sym->type = real_type;
+			 else if(type_str == "VOID")
+                		sym->type = void_type;
                     $$ = $1;
                 }
                 ;
@@ -860,6 +870,7 @@ factor          : rvariable
 func_call       : func_id T_LEFTPAR opt_expr_list T_RIGHTPAR
                 {
                     /* Your code here */
+
 					position_information *pos = new position_information(@1.first_line, @1.first_column);
 					$$ = new ast_functioncall(pos, $1, $3);
                 }
@@ -975,6 +986,7 @@ func_id         : id
                                             << "as function: "
                                             << yytext << endl << flush;
                     }
+
                     $$ = $1;
                 }
                 ;
@@ -1003,6 +1015,8 @@ id              : T_IDENT
 
                     // Make sure the symbol was declared before it is used.
                     sym_p = sym_tab->lookup_symbol($1);
+
+
                     // debug() << "id -> T_IDENT: " << sym_p << " "
                     //            << sym_tab->pool_lookup($1) << endl;
                     if (sym_p == NULL_SYM) {
