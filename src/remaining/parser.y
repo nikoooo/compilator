@@ -548,8 +548,10 @@ param           : T_IDENT T_COLON type_id
 comp_stmt       : T_BEGIN stmt_list T_END
                 {
                     /* Your code here */
-					cout << "########## comp_stmt : " << endl;
+                    if($2 != NULL)
+					cout<< "########## compstmt  stmt_list, composed: " << $$ << " = " << $1  << "\n\n" <<  endl;
 					$$ = $2; // TODO: wat is comp? complete?
+                    }
                 }
                 ;
 
@@ -558,16 +560,18 @@ stmt_list       : stmt
                 {
                     /* Your code here */
 					position_information *pos = new position_information(@1.first_line, @1.first_column);
-					if ($1 == NULL) $$ = NULL;  
-					else $$ = new ast_stmt_list(pos, $1);
-					cout<< "Statementlist found, composed to: $$ = " << $$ << "<-   " << $1 << endl;
+					if ($1 != NULL){  
+					$$ = new ast_stmt_list(pos, $1);
+					cout<< "\n中中中中中中\nStatementlist found, composed to: $$ = " << $$ << "<-   " << $1 << "\n\n" << endl;
+                }
                 }
                 | stmt_list T_SEMICOLON stmt
                 {
                     /* Your code here */
+                    
 					position_information *pos = new position_information(@1.first_line, @1.first_column);
 					$$ = new ast_stmt_list(pos, $3, $1);
-				    cout<< "Statementlist found, composed of statementList;STMT: $$ = " << $$ << "<-   " << $1 << " + " << $3 << endl;
+				    cout<< "\n 中中中中中\nStatementlist found, composed of statementList;STMT: $$ = " << $$ << "<-   " << $1 << " + " << $3 << "\n" << endl;
 
                 }
                 ;
@@ -613,7 +617,7 @@ stmt            : T_IF expr T_THEN stmt_list elsif_list else_part T_END
                 | /* empty */
                 {
                     /* Your code here */
-                	// TODO
+                	// TODO: null l輍gs ju fan in i tr輐et, det vill vi inte!! 
                 	$$ = NULL;
                 }
                 ;
