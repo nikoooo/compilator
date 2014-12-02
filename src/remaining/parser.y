@@ -548,8 +548,6 @@ param           : T_IDENT T_COLON type_id
 comp_stmt       : T_BEGIN stmt_list T_END
                 {
                     /* Your code here */
-                    if($2 != NULL)
-					cout<< "########## compstmt  stmt_list, composed: " << $$ << " = " << $1  << "\n\n" <<  endl;
 					$$ = $2; // TODO: wat is comp? complete?
                     }
                 }
@@ -560,18 +558,17 @@ stmt_list       : stmt
                 {
                     /* Your code here */
 					position_information *pos = new position_information(@1.first_line, @1.first_column);
-					if ($1 != NULL){  
+					if ($1 != NULL)  
 					$$ = new ast_stmt_list(pos, $1);
-					cout<< "\nいいいいいい\nStatementlist found, composed to: $$ = " << $$ << "<-   " << $1 << "\n\n" << endl;
-                }
                 }
                 | stmt_list T_SEMICOLON stmt
                 {
                     /* Your code here */
-                    
+				if($3 != NULL){
 					position_information *pos = new position_information(@1.first_line, @1.first_column);
 					$$ = new ast_stmt_list(pos, $3, $1);
-				    cout<< "\n いいいいい\nStatementlist found, composed of statementList;STMT: $$ = " << $$ << "<-   " << $1 << " + " << $3 << "\n" << endl;
+			}else
+		$$ = $1;	
 
                 }
                 ;
