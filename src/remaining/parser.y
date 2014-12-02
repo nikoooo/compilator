@@ -549,7 +549,6 @@ comp_stmt       : T_BEGIN stmt_list T_END
                 {
                     /* Your code here */
 					$$ = $2; // TODO: wat is comp? complete?
-                    }
                 }
                 ;
 
