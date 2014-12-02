@@ -114,7 +114,14 @@ sym_index ast_stmt_list::type_check()
 /* Type check a list of expressions. */
 sym_index ast_expr_list::type_check()
 {
-    /* Your code here */
+    /* Your niko code here */
+    
+    if (preceding != NULL) {
+        preceding->type_check();
+    }
+    if (last_expr != NULL) {
+        last_expr->type_check();
+    }
     return void_type;
 }
 
@@ -159,19 +166,36 @@ sym_index semantic::check_binop1(ast_binaryoperation *node)
 
 sym_index ast_add::type_check()
 {
-    /* Your code here */
+    /* Your niko code here */
+    if(left != NULL && right != NULL){
+        left->type_check();
+        right->type_check();
+    }
+    //Köra en fatal?
     return void_type;
 }
 
 sym_index ast_sub::type_check()
 {
-    /* Your code here */
+    /* Your niko code here */
+   
+    if(left != NULL && right != NULL){
+        left->type_check();
+        right->type_check();
+    }
+
     return void_type;
 }
 
 sym_index ast_mult::type_check()
 {
-    /* Your code here */
+    /* Your niko code here */
+
+    if(left != NULL && right != NULL){
+        left->type_check();
+        right->type_check();
+    }
+
     return void_type;
 }
 
@@ -179,7 +203,13 @@ sym_index ast_mult::type_check()
    operands are cast to real too as needed. */
 sym_index ast_divide::type_check()
 {
-    /* Your code here */
+    /* Your niko code here */
+
+    if(left != NULL && right != NULL){
+        left->type_check();
+        right->type_check();
+    }
+
     return void_type;
 }
 
