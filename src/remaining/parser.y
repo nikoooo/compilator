@@ -548,7 +548,7 @@ param           : T_IDENT T_COLON type_id
 comp_stmt       : T_BEGIN stmt_list T_END
                 {
                     /* Your code here */
-					cout << "########## comp_stmt : " << endl;
+					
 					$$ = $2; // TODO: wat is comp? complete?
                 }
                 ;
@@ -558,17 +558,19 @@ stmt_list       : stmt
                 {
                     /* Your code here */
 					position_information *pos = new position_information(@1.first_line, @1.first_column);
-					if ($1 == NULL) $$ = NULL;  
-					else $$ = new ast_stmt_list(pos, $1);
-					cout<< "################ convert: \n" << $$ << endl;
+					if ($1 != NULL)  
+					$$ = new ast_stmt_list(pos, $1);
+				
                 }
                 | stmt_list T_SEMICOLON stmt
                 {
                     /* Your code here */
+				if($3 != NULL){
 					position_information *pos = new position_information(@1.first_line, @1.first_column);
 					$$ = new ast_stmt_list(pos, $3, $1);
-					cout << "################ combine: \n" <<  $$ << endl;
-//					cout << "################stmt_list: \n" << $3 << endl;
+			}else
+		$$ = $1;	
+
                 }
                 ;
 
