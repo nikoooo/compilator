@@ -271,14 +271,14 @@ var_decl        : T_IDENT T_COLON type_id T_SEMICOLON
                     /* Your code here */
 					position_information *pos = new position_information(@1.first_line, @1.first_column);
 	                	
-	                sym_index var_loc = sym_tab->enter_variable(pos, $1, $3->sym_p);
+	                sym_tab->enter_variable(pos, $1, $3->sym_p);
                 }
                 | T_IDENT T_COLON T_ARRAY T_LEFTBRACKET integer T_RIGHTBRACKET T_OF type_id T_SEMICOLON
                 {
                     /* Your code here */
                 	position_information *pos = new position_information(@1.first_line, @1.first_column);
                 	
-                	sym_index var_loc = sym_tab->enter_array(pos, $1, $8->sym_p, $5->value);
+                	sym_tab->enter_array(pos, $1, $8->sym_p, $5->value);
                 }
                 | T_IDENT T_COLON T_ARRAY T_LEFTBRACKET const_id T_RIGHTBRACKET T_OF type_id T_SEMICOLON
                 {
