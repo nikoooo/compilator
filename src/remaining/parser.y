@@ -451,16 +451,7 @@ proc_decl       : proc_head opt_param_list T_SEMICOLON const_part variable_part
 func_decl       : func_head opt_param_list T_COLON type_id T_SEMICOLON const_part variable_part
                 {
                     /* Your niko code here*/
-              	 	symbol *type_sym  = sym_tab->get_symbol($4->sym_p);
-                	symbol *sym  = sym_tab->get_symbol($1->sym_p);
-
-			std::string type_str = sym_tab->pool_lookup(type_sym->id);
-			 if(type_str == "INTEGER")
-                		sym->type = integer_type;
-			 else if(type_str == "REAL")
-                		sym->type = real_type;
-			 else if(type_str == "VOID")
-                		sym->type = void_type;
+					sym_tab->set_symbol_type($1->sym_p, $4->sym_p);
                     $$ = $1;
                 }
                 ;
