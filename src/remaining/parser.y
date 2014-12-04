@@ -250,9 +250,15 @@ const_decl      : T_IDENT T_EQ integer T_SEMICOLON
                 		constant_symbol *constant = sym->get_constant_symbol();
                         sym_tab->enter_constant(pos, $1, constant->type, (constant->const_value.rval));
                 	}
-                	//TODO:whatwhat
                 }
-                
+                | T_IDENT T_EQ integer error
+                {
+                	yyerror("Found error at end of line.");
+                }            
+                | T_IDENT T_EQ real error
+                {
+                	yyerror("Found error at end of line.");
+                }
                 ;
 
 
@@ -502,10 +508,11 @@ func_head       : T_FUNCTION T_IDENT
 opt_param_list  : T_LEFTPAR param_list T_RIGHTPAR
                 {
                     /* Your code here */
-					$$ = $2;
+			$$ = $2;
                 }
                 | T_LEFTPAR error T_RIGHTPAR
                 {
+		    yyerror("Error in parameter list.");
                     $$ = NULL;
                 }
                 | /* empty */
@@ -610,7 +617,12 @@ stmt            : T_IF expr T_THEN stmt_list elsif_list else_part T_END
                 	position_information *pos = new position_information(@1.first_line, @1.first_column);
 					$$ = new ast_return(pos);
                 }
-                
+                | lvariable T_ASSIGN error
+                {
+                    /* Your code here */
+                	yyerror("Missing expression to assign the variable."); 
+                	$$ = NULL;
+                } 
                 | /* empty */
                 {
                     /* Your code here */
@@ -645,10 +657,11 @@ rvariable       : rvar_id
                 {
                     /* Your code here */
                 	$$ = new ast_indexed($1->pos, $1, $3);
-                	// TODO: ??
-                	//TODO:
                 }
-                
+		| error
+                {
+			yyerror("Error in rvariable.");
+		}
                 ;
 
 
@@ -761,7 +774,8 @@ simple_expr     : term
                 {
                     /* Your code here */
                 	//position_information *pos = new position_information(@1.first_line, @1.first_column);
-                	fatal("Unary plus not allowed."); // TODO
+                	//fatal("Unary plus not allowed."); // TODO
+			$$ = $2;
                 }
                 | T_SUB term
                 {
@@ -854,7 +868,10 @@ factor          : rvariable
                     /* Your code here */
                 	$$ = $2;
                 }
-                
+                | T_LEFTPAR expr
+		{
+			yyerror("Missing right parenthesis.");
+		} 
                 ;
 
 

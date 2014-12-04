@@ -48,15 +48,25 @@ bool semantic::chk_param(ast_id *env,
 	while (f != NULL && a != NULL)
 	{
 		// parameter does not match! :(
-		if(f->type != a->last_expr->type_check()) return false;	
-
+		if(f->type != a->last_expr->type_check()) {
+			type_error(env->pos) << "Type discrepancy between formal and actual parameters." << endl;
+			return false;	
+		}
 		f = f->preceding;
 		a = a->preceding;
 	}
 
 	// equal number of  params
-	if (f == NULL && a == NULL) return true;
+	if (f == NULL && a == NULL) {
+		 return true;
+	}
 	// not equal number of params
+
+	if(a != NULL)
+	type_error(env->pos) << "More actual than formal parameters." << endl;
+	if(f != NULL)	
+	type_error(env->pos) << "More formal than actual parameters." << endl;
+
 	return false;
 }
 
@@ -70,9 +80,6 @@ void semantic::check_function_parameters(ast_id *call_id,
 	parameter_symbol *formals;
 	formals = func->last_parameter;
 	bool valid = chk_param(call_id, formals, param_list);
-	if (!valid) {
-		type_error(call_id->pos) << "Actual parameters does not match acutal params." << endl;
-	}
 }
 
 void semantic::check_procedure_parameters(ast_id *call_id,
@@ -82,9 +89,6 @@ void semantic::check_procedure_parameters(ast_id *call_id,
 	parameter_symbol *formals;
 	formals = proc->last_parameter;
 	bool valid = chk_param(call_id, formals, param_list);
-	if (!valid) {
-		type_error(call_id->pos) << "Actual parameters does not match acutal params." << endl;
-	}
 }
 
 /* We overload this method for the various ast_node subclasses that can
@@ -369,9 +373,7 @@ sym_index ast_procedurecall::type_check()
 {
     /* Your code here */
 
-	if(parameter_list != NULL){
-	  type_checker->check_procedure_parameters(id, parameter_list);
-	}
+	type_checker->check_procedure_parameters(id, parameter_list);
 
     return void_type;
 }
@@ -380,7 +382,6 @@ sym_index ast_procedurecall::type_check()
 sym_index ast_assign::type_check()
 {
     /* Your code here */
-	
     sym_index ltype = lhs->type_check();
     sym_index rtype = rhs->type_check();
 
@@ -482,9 +483,7 @@ sym_index ast_return::type_check()
 sym_index ast_functioncall::type_check()
 {
 	/* Your code here */
-	if(parameter_list != NULL) {
-		type_checker->check_function_parameters(id, parameter_list);
-	}
+	type_checker->check_function_parameters(id, parameter_list);
 	return id->type_check();
 }
 
