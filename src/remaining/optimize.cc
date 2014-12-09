@@ -95,6 +95,13 @@ void ast_stmt_list::optimize()
 void ast_expr_list::optimize()
 {
     /* Your code here */
+    
+    if (preceding != NULL) {
+        preceding->optimize();
+    }
+    if (last_expr != NULL) {
+        last_expr->optimize();
+    }
 }
 
 
@@ -102,6 +109,14 @@ void ast_expr_list::optimize()
 void ast_elsif_list::optimize()
 {
     /* Your code here */
+
+
+    if (preceding != NULL) {
+        preceding->optimize();
+    }
+    if (last_elsif != NULL) {
+        last_elsif->optimize();
+    }
 }
 
 
@@ -133,7 +148,9 @@ ast_expression *ast_optimizer::fold_constants(ast_expression *node)
    nodes, so we don't need to do anything at all here. */
 void ast_add::optimize()
 {
-    /* Your code here */
+    /* Your code here , right and left is availabla here NIKO*/
+    //Fel i guess
+    //sym_table->lookup_symbol(left->type);
 }
 
 void ast_sub::optimize()
@@ -201,52 +218,99 @@ void ast_greaterthan::optimize()
 void ast_procedurecall::optimize()
 {
     /* Your code here */
+
+    if (parameter_list != NULL) {
+        parameter_list->optimize();
+    }
 }
 
 
 void ast_assign::optimize()
 {
     /* Your code here */
+    if (lhs != NULL) {
+        lhs->optimize();
+    }
+    if (rhs != NULL) {
+        rhs->optimize();
+    }
 }
 
 
 void ast_while::optimize()
 {
     /* Your code here */
+    if (condition != NULL) {
+        condition->optimize();
+    }
+    if (body != NULL) {
+        body->optimize();
+    }
 }
 
 
 void ast_if::optimize()
 {
     /* Your code here */
+    if (condition != NULL) {
+        condition->optimize();
+    }
+    if (body != NULL) {
+        body->optimize();
+    }
+    if (elsif_list != NULL) {
+        elsif_list->optimize();
+    }
+    if (else_body != NULL) {
+        else_body->optimize();
+    }
 }
 
 
 void ast_return::optimize()
 {
     /* Your code here */
+    if (value != NULL) {
+        value->optimize();
+    }
 }
 
 
 void ast_functioncall::optimize()
 {
     /* Your code here */
+    if (parameter_list != NULL) {
+        parameter_list->optimize();
+    }
 }
 
 void ast_uminus::optimize()
 {
-    /* Your code here */
+    /* Your code here TODO: VAD GORA HER */
+    if (expr != NULL) {
+        expr->optimize(); // Is there really something to optimize NIKO?
+    }
 }
 
 void ast_not::optimize()
 {
     /* Your code here */
+    if (expr != NULL) {
+        expr->optimize();
+    }
 }
 
 
 void ast_elsif::optimize()
 {
     /* Your code here */
+
+    if (condition != NULL) {
+        condition->optimize();
+    }
+    if (body != NULL) {
+        body->optimize();
+    }
 }
 
 
