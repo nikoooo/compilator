@@ -101,6 +101,7 @@ void ast_expr_list::optimize()
     }
     if (last_expr != NULL) {
         last_expr->optimize();
+        last_expr = optimizer->fold_constants(last_expr);
     }
 }
 
@@ -131,6 +132,10 @@ void ast_id::optimize()
 void ast_indexed::optimize()
 {
     /* Your code here */
+    if (index != NULL) {
+        index->optimize();
+        index = optimizer->fold_constants(index);
+    }
 }
 
 
@@ -140,17 +145,60 @@ void ast_indexed::optimize()
    original node if no optimization could be performed. */
 ast_expression *ast_optimizer::fold_constants(ast_expression *node)
 {
-    /* Your code here */
-    return NULL;
+    if (!is_binop(node)) return node;
+    ast_binaryoperation *binop = node->get_ast_binaryoperation();
+      
+    //ast_integer *li2 = fold_constants(binop->left)->get_ast_integer();
+    //cout << li2 << endl;
+    //        return new ast_integer(binop->pos, li2->value);
+    if (binop->left->tag == AST_INTEGER && binop->right->tag == AST_INTEGER)
+    {
+    ast_integer *li = fold_constants(binop->left)->get_ast_integer();
+    ast_integer *ri = fold_constants(binop->right)->get_ast_integer();
+    switch (binop->tag) {
+        case AST_ADD:
+            return new ast_integer(binop->pos, li->value + ri->value);
+        case AST_SUB:
+            return new ast_integer(binop->pos, li->value - ri->value);
+        case AST_OR:
+            return new ast_integer(binop->pos, li->value | ri->value);
+        case AST_AND:
+            return new ast_integer(binop->pos, li->value & ri->value);
+        case AST_MULT:
+            return new ast_integer(binop->pos, li->value * ri->value);
+        case AST_IDIV:
+            return new ast_integer(binop->pos, li->value / ri->value);
+        case AST_MOD:
+            return new ast_integer(binop->pos, li->value % ri->value);
+        default:
+            fatal("Error folding constants");
+    }
+    }
+    else if (binop->left->tag == AST_REAL && binop->right->tag == AST_REAL)
+    {
+    ast_real *li = fold_constants(binop->left)->get_ast_real();
+    ast_real *ri = fold_constants(binop->right)->get_ast_real();
+    switch (binop->tag) {
+        case AST_ADD:
+            return new ast_real(binop->pos, li->value + ri->value);
+        case AST_SUB:
+            return new ast_real(binop->pos, li->value - ri->value);
+        case AST_MULT:
+            return new ast_real(binop->pos, li->value * ri->value);
+        case AST_DIVIDE:
+            return new ast_real(binop->pos, li->value / ri->value);
+        default:
+            fatal("Error folding constants");
+    }
+    }
+    return node;
 }
 
 /* All the binary operations should already have been detected in their parent
    nodes, so we don't need to do anything at all here. */
 void ast_add::optimize()
 {
-    /* Your code here , right and left is availabla here NIKO*/
-    //Fel i guess
-    //sym_table->lookup_symbol(left->type);
+    /* Your code here */
 }
 
 void ast_sub::optimize()
@@ -194,21 +242,56 @@ void ast_mod::optimize()
 void ast_equal::optimize()
 {
     /* Your code here */
+    if (left != NULL) {
+        left->optimize();
+        left = optimizer->fold_constants(left);
+    }
+    if (right != NULL) {
+        right->optimize();
+        right = optimizer->fold_constants(right);
+    }
 }
 
 void ast_notequal::optimize()
 {
-    /* Your code here */
+    /* Your code here */    
+    if (left != NULL) {
+        left->optimize();
+        left = optimizer->fold_constants(left);
+    }
+    if (right != NULL) {
+        right->optimize();
+        right = optimizer->fold_constants(right);
+    }
+
 }
 
 void ast_lessthan::optimize()
 {
     /* Your code here */
+    if (left != NULL) {
+        left->optimize();
+        left = optimizer->fold_constants(left);
+    }
+    if (right != NULL) {
+        right->optimize();
+        right = optimizer->fold_constants(right);
+    }
+
 }
 
 void ast_greaterthan::optimize()
 {
     /* Your code here */
+    if (left != NULL) {
+        left->optimize();
+        left = optimizer->fold_constants(left);
+    }
+    if (right != NULL) {
+        right->optimize();
+        right = optimizer->fold_constants(right);
+    }
+
 }
 
 
@@ -231,8 +314,11 @@ void ast_assign::optimize()
     if (lhs != NULL) {
         lhs->optimize();
     }
+
+    // The right
     if (rhs != NULL) {
         rhs->optimize();
+        rhs = optimizer->fold_constants(rhs);
     }
 }
 
@@ -242,6 +328,7 @@ void ast_while::optimize()
     /* Your code here */
     if (condition != NULL) {
         condition->optimize();
+        condition = optimizer->fold_constants(condition);
     }
     if (body != NULL) {
         body->optimize();
@@ -254,6 +341,7 @@ void ast_if::optimize()
     /* Your code here */
     if (condition != NULL) {
         condition->optimize();
+        condition = optimizer->fold_constants(condition);
     }
     if (body != NULL) {
         body->optimize();
@@ -271,7 +359,8 @@ void ast_return::optimize()
 {
     /* Your code here */
     if (value != NULL) {
-        value->optimize();
+        value->optimize(); 
+        value = optimizer->fold_constants(value);
     }
 }
 
@@ -286,9 +375,10 @@ void ast_functioncall::optimize()
 
 void ast_uminus::optimize()
 {
-    /* Your code here TODO: VAD GORA HER */
+    /* Your code here  */
     if (expr != NULL) {
-        expr->optimize(); // Is there really something to optimize NIKO?
+        expr->optimize();
+        expr = optimizer->fold_constants(expr);
     }
 }
 
@@ -297,6 +387,7 @@ void ast_not::optimize()
     /* Your code here */
     if (expr != NULL) {
         expr->optimize();
+        expr = optimizer->fold_constants(expr);
     }
 }
 
@@ -307,6 +398,7 @@ void ast_elsif::optimize()
 
     if (condition != NULL) {
         condition->optimize();
+        condition = optimizer->fold_constants(condition);
     }
     if (body != NULL) {
         body->optimize();
