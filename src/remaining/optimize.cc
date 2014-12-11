@@ -147,51 +147,94 @@ ast_expression *ast_optimizer::fold_constants(ast_expression *node)
 {
     if (!is_binop(node)) return node;
     ast_binaryoperation *binop = node->get_ast_binaryoperation();
-      
-    //ast_integer *li2 = fold_constants(binop->left)->get_ast_integer();
-    //cout << li2 << endl;
-    //        return new ast_integer(binop->pos, li2->value);
-    if (binop->left->tag == AST_INTEGER && binop->right->tag == AST_INTEGER)
+    ast_expression *left = fold_constants(binop->left);
+    ast_expression *right = fold_constants(binop->right);
+
+    
+    if (left->tag == AST_ID) 
     {
-    ast_integer *li = fold_constants(binop->left)->get_ast_integer();
-    ast_integer *ri = fold_constants(binop->right)->get_ast_integer();
-    switch (binop->tag) {
-        case AST_ADD:
-            return new ast_integer(binop->pos, li->value + ri->value);
-        case AST_SUB:
-            return new ast_integer(binop->pos, li->value - ri->value);
-        case AST_OR:
-            return new ast_integer(binop->pos, li->value | ri->value);
-        case AST_AND:
-            return new ast_integer(binop->pos, li->value & ri->value);
-        case AST_MULT:
-            return new ast_integer(binop->pos, li->value * ri->value);
-        case AST_IDIV:
-            return new ast_integer(binop->pos, li->value / ri->value);
-        case AST_MOD:
-            return new ast_integer(binop->pos, li->value % ri->value);
-        default:
-            fatal("Error folding constants");
+        symbol *left_sym = sym_tab->get_symbol(left->get_ast_id()->sym_p);
+        if (left_sym->tag == SYM_CONST) {
+        constant_symbol *left_const = left_sym->get_constant_symbol();
+        if (left_const->type == integer_type)
+        {    
+            left = new ast_integer(left->pos, left_const->const_value.ival);
+        }
+        else if (left_const->type == real_type) {
+            left = new ast_real(left->pos, left_const->const_value.rval);
+        }
+        }
+
     }
+    
+    if (right->tag == AST_ID) 
+    {
+        symbol *right_sym = sym_tab->get_symbol(right->get_ast_id()->sym_p);
+        if (right_sym->tag == SYM_CONST) {
+        constant_symbol *right_const = right_sym->get_constant_symbol();
+        if (right_const->type == integer_type)
+        {    
+            right = new ast_integer(right->pos, right_const->const_value.ival);
+        }  else if (right_const->type == real_type) {
+            right = new ast_real(right->pos, right_const->const_value.rval);
+        }
+        }
+    }
+    
+  
+    if (left->tag == AST_INTEGER && right->tag == AST_INTEGER)
+    {
+    ast_integer *li = left->get_ast_integer();
+    ast_integer *ri = right->get_ast_integer();
+    return intint(binop->tag, li->value, ri->value, left->pos);
     }
     else if (binop->left->tag == AST_REAL && binop->right->tag == AST_REAL)
     {
-    ast_real *li = fold_constants(binop->left)->get_ast_real();
-    ast_real *ri = fold_constants(binop->right)->get_ast_real();
-    switch (binop->tag) {
+    ast_real *li = left->get_ast_real();
+    ast_real *ri = right->get_ast_real();
+    return realreal(binop->tag, li->value, ri->value, left->pos);
+    }
+    
+    return node;
+}
+
+
+ast_integer *ast_optimizer::intint(ast_node_types ant, long a, long b, position_information *pos){
+  switch (ant) {
         case AST_ADD:
-            return new ast_real(binop->pos, li->value + ri->value);
+            return new ast_integer(pos, a + b);
         case AST_SUB:
-            return new ast_real(binop->pos, li->value - ri->value);
+            return new ast_integer(pos, a - b);
+        case AST_OR:
+            return new ast_integer(pos, a!=0 || b!=0);
+        case AST_AND:
+            return new ast_integer(pos, a!=0 && b!=0);
         case AST_MULT:
-            return new ast_real(binop->pos, li->value * ri->value);
-        case AST_DIVIDE:
-            return new ast_real(binop->pos, li->value / ri->value);
+            return new ast_integer(pos, a * b);
+        case AST_IDIV:
+            return new ast_integer(pos, a / b);
+        case AST_MOD:
+            return new ast_integer(pos, a % b);
         default:
             fatal("Error folding constants");
+            return NULL;
     }
+}
+
+ast_real *ast_optimizer::realreal(ast_node_types ant, double a, double b, position_information *pos){
+     switch (ant) {
+        case AST_ADD:
+            return new ast_real(pos, a + b);
+        case AST_SUB:
+            return new ast_real(pos, a - b);
+        case AST_MULT:
+            return new ast_real(pos, a * b);
+        case AST_DIVIDE:
+            return new ast_real(pos, a / b);
+        default:
+            fatal("Error folding constants");
+            return NULL;
     }
-    return node;
 }
 
 /* All the binary operations should already have been detected in their parent

@@ -37,7 +37,8 @@ public:
     // so the ast_* nodes can access it. Another solution would be to make it
     // a static method in the optimize.cc file... A matter of preference.
     ast_expression *fold_constants(ast_expression *);
+    ast_integer *intint(ast_node_types ant, long a, long b, position_information *pos);
+    ast_real *realreal(ast_node_types ant, double a, double b, position_information *pos);
 };
-
 
 #endif
