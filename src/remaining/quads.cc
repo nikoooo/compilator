@@ -296,6 +296,12 @@ sym_index ast_equal::generate_quads(quad_list &q)
 {
     USE_Q;
     /* Your code here */
+
+
+    new quadrouple(q_ieq, symindex, sym,index, sym index);
+    new quadrouple(q_req, symindex, sym,index, sym index); 
+   fgdhfgdh 
+
     return NULL_SYM;
 }
 
