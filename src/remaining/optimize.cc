@@ -242,44 +242,62 @@ ast_real *ast_optimizer::realreal(ast_node_types ant, double a, double b, positi
 void ast_add::optimize()
 {
     /* Your code here */
+    optimizer->opt_binop(this);
 }
 
 void ast_sub::optimize()
 {
     /* Your code here */
+    optimizer->opt_binop(this);
 }
 
 void ast_mult::optimize()
 {
     /* Your code here */
+    optimizer->opt_binop(this);
 }
 
 void ast_divide::optimize()
 {
     /* Your code here */
+    optimizer->opt_binop(this);
 }
 
 void ast_or::optimize()
 {
     /* Your code here */
+    optimizer->opt_binop(this);
 }
 
 void ast_and::optimize()
 {
     /* Your code here */
+    optimizer->opt_binop(this);
 }
 
 void ast_idiv::optimize()
 {
     /* Your code here */
+    optimizer->opt_binop(this);
 }
 
 void ast_mod::optimize()
 {
     /* Your code here */
+    optimizer->opt_binop(this);
 }
 
-
+void ast_optimizer::opt_binop(ast_binaryoperation *binop)
+{
+    if (binop->left != NULL) {
+        binop->left->optimize();
+        binop->left = optimizer->fold_constants(binop->left);
+    }
+    if (binop->right != NULL) {
+        binop->right->optimize();
+        binop->right = optimizer->fold_constants(binop->right);
+    }
+}
 
 /* We can apply constant folding to binary relations as well. */
 void ast_equal::optimize()
