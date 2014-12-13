@@ -511,8 +511,10 @@ sym_index ast_elsif::type_check()
 	if(condType != integer_type){
 		type_error(condition->pos) << "Must be of integer type!" << endl;
 	}
-	
-	body->type_check();
+	if (body != NULL)
+    {
+        body->type_check();
+    }
 
 	return void_type;
 }
