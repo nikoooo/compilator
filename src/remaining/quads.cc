@@ -455,15 +455,13 @@ void ast_expr_list::generate_parameter_list(quad_list &q,
 {
     USE_Q;
     /* Your code here */
-
-    sym_index param_pos = last_expr->generate_quads(q);
-    //*nr_params+=1;
-    *nr_params++;
-
-    q += new quadruple(q_param, param_pos, NULL_SYM, NULL_SYM); 
+    (*nr_params)++; // incr value pointer is pointing to
+    sym_index si = last_expr->generate_quads(q);
+    q += new quadruple(q_param, si, NULL_SYM, NULL_SYM); 
     if (preceding != NULL) {
+        // TODO *last_param unused?
 	    preceding->generate_parameter_list(q, NULL, nr_params); 
-}
+    }
 
 
 }
@@ -474,10 +472,10 @@ sym_index ast_procedurecall::generate_quads(quad_list &q)
 {
     USE_Q;
     /* Your code here */
+    int nr_params = 0;
+    parameter_list->generate_parameter_list(q, NULL, &nr_params);
 
-
-
-
+    q += new quadruple(q_call, id->sym_p, nr_params, NULL_SYM);
     return NULL_SYM;
 }
 
@@ -487,7 +485,12 @@ sym_index ast_functioncall::generate_quads(quad_list &q)
 {
     USE_Q;
     /* Your code here */
-    return NULL_SYM;
+    int nr_params = 0;
+    parameter_list->generate_parameter_list(q, NULL, &nr_params);
+    
+    sym_index ret = sym_tab->gen_temp_var(id->type);
+    q += new quadruple(q_call, id->sym_p, nr_params, ret);
+    return ret;
 }
 
 
@@ -598,8 +601,11 @@ sym_index ast_return::generate_quads(quad_list &q)
     USE_Q;
     /* Your code here */
     sym_index retval = value->generate_quads(q);
+    if (value->type == integer_type)
+        q += new quadruple(q_ireturn, q.last_label, retval, NULL_SYM);
+    else
+        q += new quadruple(q_rreturn, q.last_label, retval, NULL_SYM);
 
-    q += new quadruple(q_rreturn, q.last_label, retval, NULL_SYM);
     return retval;
 }
 
