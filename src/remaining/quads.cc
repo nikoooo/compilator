@@ -193,7 +193,8 @@ sym_index do_binaryoperation(quad_list &q, quad_op_type int_quad, quad_op_type r
 
     sym_index ltype = astbin->left->type;
     sym_index rtype = astbin->right->type;
-    if (ltype != rtype)
+
+    if (ltype != rtype && !(ltype == void_type || rtype == void_type) )
     {
         sym_index temp = sym_tab->gen_temp_var(real_type);
         if (ltype == integer_type) {
@@ -225,6 +226,7 @@ sym_index do_binaryrelation(quad_list &q, quad_op_type int_quad, quad_op_type re
     sym_index ltype = astbin->left->type;
     sym_index rtype = astbin->right->type;
     sym_index dest_type = ltype;
+
     if (ltype != rtype)
     {
         dest_type = real_type;
