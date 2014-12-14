@@ -615,7 +615,15 @@ sym_index ast_indexed::generate_quads(quad_list &q)
 {
     USE_Q;
     /* Your code here */
-    return NULL_SYM;
+    sym_index i = index->generate_quads(q);
+    sym_index j = sym_tab->gen_temp_var(type);
+
+    if (type == integer_type) {
+        q += new quadruple(q_irindex, id->sym_p, i, j); 
+    }else if (type == real_type) {
+        q += new quadruple(q_rrindex, id->sym_p, i, j); 
+    }
+    return j;
 }
 
 
