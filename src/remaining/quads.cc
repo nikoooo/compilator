@@ -488,9 +488,9 @@ sym_index ast_functioncall::generate_quads(quad_list &q)
     USE_Q;
     /* Your code here */
     int nr_params = 0;
+    sym_index ret = sym_tab->gen_temp_var(id->type);
     parameter_list->generate_parameter_list(q, NULL, &nr_params);
     
-    sym_index ret = sym_tab->gen_temp_var(id->type);
     q += new quadruple(q_call, id->sym_p, nr_params, ret);
     return ret;
 }
