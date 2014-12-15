@@ -182,7 +182,10 @@ void code_generator::find(sym_index sym_p, int *level, int *offset)
 void code_generator::frame_address(int level, const register_type dest)
 {
     /* Your code here */
-    //COULD be off-by-one
+    //COULD be off-by-one, step this shit level by level ...
+    
+   // out << "mov" << "\t\t" << reg[dest] << "\t" << "[rbp" << level * frame_size_i << endl;
+
 }
 
 /* This function fetches the value of a variable or a constant into a
@@ -660,6 +663,9 @@ void code_generator::expand(quad_list *q_list)
 
         case q_call: {
             /* Your code here */
+
+            int label = sym_tab->get_next_label();
+            out << "jmp" << "\t\t" << "L:" + label << endl; 
              
            // out << "\t\t" << "push" << "\t" << "rcx" << endl;
             //out << "\t\t" << "mov" << "\t" << "[rcx], rax" << endl;
