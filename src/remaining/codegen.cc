@@ -182,8 +182,7 @@ void code_generator::find(sym_index sym_p, int *level, int *offset)
 void code_generator::frame_address(int level, const register_type dest)
 {
     /* Your code here */
-
-    //STORE(FramePointer) 
+    //COULD be off-by-one
 }
 
 /* This function fetches the value of a variable or a constant into a
@@ -248,7 +247,7 @@ void code_generator::fetch_float(sym_index sym_p)
     switch (tag) {
         case SYM_CONST:{       
             constant_symbol *cs = sym->get_constant_symbol();
-            v = sym_tab->ieee(cs->const_value.rval) ;
+            v = sym_tab->ieee(cs->const_value.rval);
             out << "\t\t" << "fld" << "\t"  <<  v << endl;
             return;
         }
@@ -260,9 +259,9 @@ void code_generator::fetch_float(sym_index sym_p)
       
     }      
         if (offset >=0) 
-            out << "\t\t" << "fld" << "\t+"  << v << endl;
+            out << "fld" << "\t\t+"  << v << endl;
         else
-            out << "\t\t" << "fld" << "\t-"  << v << endl;
+            out << "fld" << "\t\t"  << v << endl;
 
 }
 
@@ -272,26 +271,27 @@ void code_generator::fetch_float(sym_index sym_p)
 void code_generator::store(register_type src, sym_index sym_p)
 {
     /* Your code here */
-    sym_index sym_i = sym_tab->gen_temp_var(integer_type); //vet inte om detta aer en int...
-    symbol *sym = sym_tab->get_symbol(sym_i);
     
-   switch (sym->type) {
-       case SYM_VAR:{
-          // variable_symbol *varsym = sym->get_variable_symbol();
-          // varsm->
-           break;}
-       case SYM_PARAM:
-           
-           break;
+    int level,offset;
+    find(sym_p, &level, &offset);
+  
+    out << "mov" << "\t\t" << "[rbp+" << offset << "]\t" << reg[src] << endl;
    
-           
-   }
-  //  sym->value = reg[src];
 }
 
 void code_generator::store_float(sym_index sym_p)
 {
     /* Your code here */
+    int level,offset;
+    find(sym_p, &level, &offset);
+
+    //DOES THE TYPE MATTER?
+    if (offset >= 0) {        
+    out << "mov" << "\t" << "[rbp+" << offset << "]\t" << "ST(0)" << endl;   
+    }else{
+    out << "mov" << "\t" << "[rbp" << offset << "]\t" << "ST(0)" << endl;   
+    }
+    //fstp ST(0)
 }
 
 
@@ -299,6 +299,12 @@ void code_generator::store_float(sym_index sym_p)
 void code_generator::array_address(sym_index sym_p, register_type dest)
 {
     /* Your code here */
+    int level,offset;
+    find(sym_p, &level, &offset);
+    
+    //should only be -
+    out << "mov" << "\t\t" << reg[dest] << "[rbp" << offset << "]" << endl; 
+
 }
 
 /* This method expands a quad_list into assembler code, quad for quad. */
