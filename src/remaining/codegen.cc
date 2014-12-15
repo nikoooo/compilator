@@ -3,6 +3,7 @@
 #include <fstream>
 #include <stdio.h>
 #include <string.h>
+#include <string>
 
 #include "symtab.hh"
 #include "quads.hh"
@@ -50,7 +51,7 @@ void code_generator::generate_assembler(quad_list *q, symbol *env)
 
 
 
-/* This method aligns a frame size on an 8-byte boundary. Used by prologue().
+/* This method a264ligns a frame size on an 8-byte boundary. Used by prologue().
  */
 int code_generator::align(int frame_size)
 {
@@ -71,7 +72,7 @@ void code_generator::prologue(symbol *new_env)
     // Again, we need a safe downcast for a procedure/function.
     // Note that since we have already generated quads for the entire block
     // before we expand it to assembler, the size of the activation record
-    // is known here (ar_size).
+    // is known 264here (ar_size).
     if (new_env->tag == SYM_PROC) {
         procedure_symbol *proc = new_env->get_procedure_symbol();
         ar_size = align(proc->ar_size);
@@ -87,7 +88,6 @@ void code_generator::prologue(symbol *new_env)
         fatal("code_generator::prologue() called for non-proc/func");
         return;
     }
-
     /* Print out the label number (a SYM_PROC/ SYM_FUNC attribute) */
     out << "L" << label_nr << ":" << "\t\t\t" << "# " <<
         /* Print out the function/procedure name */
@@ -99,6 +99,30 @@ void code_generator::prologue(symbol *new_env)
     }
 
     /* Your code here */
+    //find(new_env->sym_p, &(new_env->level), &(new_env->offset));
+    int level = new_env->level;
+    int offset = new_env->offset;
+    
+    // store previous RBP 
+    out << "\t\t" << "push" << "\t" << "rbp" << endl;
+    
+    // save prev RSB in temp register
+    out << "\t\t" << "mov" << "\t" << "rcx, rsp" << endl;
+    
+    // push other display RBPS
+    for (int i = 1; i < level+1; i++) {
+        out << "\t\t" << "push" << "\t" << "[rbp-" << i*8 << "]" << endl;
+    }
+    // prev RSP to stack
+    out << "\t\t" << "push" << "\t" << "rcx" << endl;
+
+    // Set RBP register to correct value (actually update it)
+    out << "\t\t" << "mov" << "\t" << "rbp, rcx" << endl;
+
+    // Allocate memory down from stack pointer
+    out << "\t\t" << "sub" << "\t" << "rsp, " << ar_size  << endl;
+
+    // ... expand() ...
 
     out << flush;
 }
@@ -114,7 +138,11 @@ void code_generator::epilogue(symbol *old_env)
     }
 
     /* Your code here */
+    
 
+   // out << old_env->label_nr << endl;
+    out << "\t\t" << "leave" << endl;
+    out << "\t\t" << "ret" << endl;
     out << flush;
 }
 
@@ -125,6 +153,16 @@ void code_generator::epilogue(symbol *old_env)
 void code_generator::find(sym_index sym_p, int *level, int *offset)
 {
     /* Your code here */
+    symbol *sym = sym_tab->get_symbol(sym_p);
+    sym_type tag = sym->tag;
+    out << "####### FIND" << endl;
+    *offset = sym->offset;
+    if (tag == SYM_PARAM) {
+        out << "####### SYM_PARAM" << endl;
+        *offset = -(sym->offset);
+    }
+
+    *level = sym->level;
 }
 
 /*
@@ -140,6 +178,38 @@ void code_generator::frame_address(int level, const register_type dest)
 void code_generator::fetch(sym_index sym_p, register_type dest)
 {
     /* Your code here */
+    symbol *sym = sym_tab->get_symbol(sym_p);
+    string val = "nothing";
+
+    if (sym == NULL) {
+        return;
+    }
+   
+    switch (sym->tag) {
+        case SYM_CONST:{
+            constant_symbol *consym = sym->get_constant_symbol();
+            if (consym->type == integer_type) {
+                val = "" + consym->const_value.ival;
+            } else {
+                val = "" + sym_tab->ieee(consym->const_value.rval);
+            }
+            break;
+                       }
+        case SYM_VAR:
+            //val = "[rbp-" + sym->offset + ']';
+            val = "[rbp-" + to_string(sym->offset) + "]";
+            break;
+        case SYM_PARAM:
+            val = "[rbp+" + to_string(sym->offset) + "]";
+            break;
+        default:
+            cout << "DEAFAULT CASE" << endl;
+            
+    }
+
+    cout << "FETCHING:   " << val << endl; 
+
+    reg[dest] = val;
 }
 
 void code_generator::fetch_float(sym_index sym_p)
@@ -385,7 +455,7 @@ void code_generator::expand(quad_list *q_list)
 
             fetch_float(q->sym1);
             fetch_float(q->sym2);
-            out << "\t\t" << "fcomip" << "\t" << "ST(0), ST(1)" << endl;
+            out << "\t\t" << "fcomip" << "\t" << "" ST(0), ST(1)" << endl;
             // Clear the stack
             out << "\t\t" << "fstp" << "\t" << "ST(0)" << endl;
             out << "\t\t" << "jne" << "\t" << "L" << label << endl;
@@ -520,6 +590,9 @@ void code_generator::expand(quad_list *q_list)
 
         case q_call: {
             /* Your code here */
+            find(q->sym1, RCX); 
+            out << "\t\t" << "push" << "\t" << "rcx" << endl;
+            out << "\t\t" << "mov" << "\t" << "[rcx], rax" << endl;
             break;
         }
         case q_rreturn:

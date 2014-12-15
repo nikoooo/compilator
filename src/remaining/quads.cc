@@ -602,6 +602,11 @@ sym_index ast_return::generate_quads(quad_list &q)
 {
     USE_Q;
     /* Your code here */
+    if (value == NULL) {
+        q += new quadruple(q_ireturn, q.last_label, NULL_SYM, NULL_SYM );
+        return 0;
+    }
+
     sym_index retval = value->generate_quads(q);
     if (value->type == integer_type)
         q += new quadruple(q_ireturn, q.last_label, retval, NULL_SYM);
