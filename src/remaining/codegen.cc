@@ -160,7 +160,7 @@ void code_generator::find(sym_index sym_p, int *level, int *offset)
 
     if (tag == SYM_PARAM) {
         *level = sym->level;
-        *offset = -(sym->offset);
+        *offset = sym->offset;
 
     }  else if (tag == SYM_VAR) {
         *level = sym->level;
@@ -170,7 +170,7 @@ void code_generator::find(sym_index sym_p, int *level, int *offset)
 
         array_symbol *arrs = sym->get_array_symbol();
         *level = arrs->level;
-        *offset = -(sym->offset) - (sym_tab->get_size(sym->type) * arrs->array_cardinality);
+        *offset = -(sym->offset) - (sym_tab->get_size(arrs->type) * arrs->array_cardinality);
     }
 
     //*level = sym->level;
@@ -193,6 +193,8 @@ void code_generator::fetch(sym_index sym_p, register_type dest)
     /* Your code here */
     symbol *sym = sym_tab->get_symbol(sym_p);
     string val = "";
+    int level,offset;
+    find(sym_p, &level, &offset);
 
     if (sym == NULL) {
         return;
@@ -203,35 +205,30 @@ void code_generator::fetch(sym_index sym_p, register_type dest)
         case SYM_CONST:{
             constant_symbol *consym = sym->get_constant_symbol();
             if (consym->type == integer_type) {
-                val = "" + consym->const_value.ival;
+                val = to_string(consym->const_value.ival);
             } else {
-                val = "" + sym_tab->ieee(consym->const_value.rval);
+                val = to_string(sym_tab->ieee(consym->const_value.rval));
             }
-            break;
-                       }
-        case SYM_VAR:{
-            val = "[rbp-" + to_string(sym->offset + sym_tab->get_size(sym->type)) + ']';
-                                       
-            break;
-                     }
+            out << "\t\t" << "mov\t" << reg[dest] << "," + val << endl;
+            return;
+        }
+        case SYM_VAR:
         case SYM_PARAM:
-            val = "[rbp-" + to_string(sym->offset) + "]";
+        case SYM_ARRAY:
+            val = to_string(offset);
             break;
-        case SYM_ARRAY:{
-            array_symbol *arrs = sym->get_array_symbol();
-            val = "[rbp-" + to_string(arrs->offset + sym_tab->get_size(arrs->type
-                        ) * arrs->array_cardinality) + "]";
-            break;
-                       }
         default:
-            cout << "DEAFAULT CASE" << endl;
+            fatal("Landed in default fatal. In fetch!") ;
             
     }
+    if (offset >=0) {
+        val = "[rbp+" + val + "]";
+    }else
+        val = "[rbp-" + val + "]";
 
-    cout << "FETCHING:   " << val << endl; 
+    //cout << "FETCHING:   " << val << endl; 
 
-    //out << "\t\t" << "mov\t" << dest << "," + val << endl;
-    reg[dest] = val;
+    out << "\t\t" << "mov\t" << reg[dest] << "," + val << endl;
 }
 
 void code_generator::fetch_float(sym_index sym_p)
@@ -240,6 +237,10 @@ void code_generator::fetch_float(sym_index sym_p)
     symbol *sym = sym_tab->get_symbol(sym_p);
     sym_type tag = sym->tag;
 
+    int level,offset;
+    long v;
+    find(sym_p, &level, &offset);
+
     if (sym->type != real_type) 
         return;
 
@@ -247,22 +248,21 @@ void code_generator::fetch_float(sym_index sym_p)
     switch (tag) {
         case SYM_CONST:{       
             constant_symbol *cs = sym->get_constant_symbol();
-            out << "\t\t" << "push" << "\t" << "fpu, " << sym_tab->ieee(cs->const_value.rval) << endl;
-            break;
-                       }
+            v = sym_tab->ieee(cs->const_value.rval) ;
+            out << "\t\t" << "fld" << "\t"  <<  v << endl;
+            return;
+        }
         case SYM_PARAM:
-                //TODO:
-            break;
         case SYM_VAR:
-
-            break;
         case SYM_ARRAY:
-
+            v = offset;
             break;
       
     }      
-    
-
+        if (offset >=0) 
+            out << "\t\t" << "fld" << "\t+"  << v << endl;
+        else
+            out << "\t\t" << "fld" << "\t-"  << v << endl;
 
 }
 
@@ -277,7 +277,7 @@ void code_generator::store(register_type src, sym_index sym_p)
     
    switch (sym->type) {
        case SYM_VAR:{
-           variable_symbol *varsym = sym->get_variable_symbol();
+          // variable_symbol *varsym = sym->get_variable_symbol();
           // varsm->
            break;}
        case SYM_PARAM:
@@ -286,7 +286,7 @@ void code_generator::store(register_type src, sym_index sym_p)
    
            
    }
-    sym->value = reg[src];
+  //  sym->value = reg[src];
 }
 
 void code_generator::store_float(sym_index sym_p)
