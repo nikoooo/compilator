@@ -287,7 +287,6 @@ void code_generator::store_float(sym_index sym_p)
     /* Your code here */
     int level,offset;
     find(sym_p, &level, &offset);
-
     //DOES THE TYPE MATTER?
     if (offset >= 0) {        
     out << "mov" << "\t" << "[rbp+" << offset << "]\t" << "ST(0)" << endl;   
@@ -664,9 +663,10 @@ void code_generator::expand(quad_list *q_list)
         case q_call: {
             /* Your code here */
 
-            int label = sym_tab->get_next_label();
-            out << "jmp" << "\t\t" << "L:" + label << endl; 
-             
+            //int label = sym_tab->get_next_label();
+            //int label2 = sym_tab->get_next_label();
+            //out << "jmp" << "\t\t" << "L:" + label << endl; 
+           // out << "L:" << to_string(label2) << endl;
            // out << "\t\t" << "push" << "\t" << "rcx" << endl;
             //out << "\t\t" << "mov" << "\t" << "[rcx], rax" << endl;
             break;
