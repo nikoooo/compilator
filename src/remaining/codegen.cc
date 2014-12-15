@@ -155,14 +155,25 @@ void code_generator::find(sym_index sym_p, int *level, int *offset)
     /* Your code here */
     symbol *sym = sym_tab->get_symbol(sym_p);
     sym_type tag = sym->tag;
-    out << "####### FIND" << endl;
+    
     *offset = sym->offset;
+
     if (tag == SYM_PARAM) {
-        out << "####### SYM_PARAM" << endl;
+        *level = sym->level;
         *offset = -(sym->offset);
+
+    }  else if (tag == SYM_VAR) {
+        *level = sym->level;
+        *offset = -(sym->offset) - sym_tab->get_size(sym->type);
+
+    }  else if (tag == SYM_ARRAY) {
+
+        array_symbol *arrs = sym->get_array_symbol();
+        *level = arrs->level;
+        *offset = -(sym->offset) - (sym_tab->get_size(sym->type) * arrs->array_cardinality);
     }
 
-    *level = sym->level;
+    //*level = sym->level;
 }
 
 /*
@@ -171,6 +182,8 @@ void code_generator::find(sym_index sym_p, int *level, int *offset)
 void code_generator::frame_address(int level, const register_type dest)
 {
     /* Your code here */
+
+    //STORE(FramePointer) 
 }
 
 /* This function fetches the value of a variable or a constant into a
@@ -179,13 +192,14 @@ void code_generator::fetch(sym_index sym_p, register_type dest)
 {
     /* Your code here */
     symbol *sym = sym_tab->get_symbol(sym_p);
-    string val = "nothing";
+    string val = "";
 
     if (sym == NULL) {
         return;
     }
    
     switch (sym->tag) {
+
         case SYM_CONST:{
             constant_symbol *consym = sym->get_constant_symbol();
             if (consym->type == integer_type) {
@@ -195,13 +209,20 @@ void code_generator::fetch(sym_index sym_p, register_type dest)
             }
             break;
                        }
-        case SYM_VAR:
-            //val = "[rbp-" + sym->offset + ']';
+        case SYM_VAR:{
+            val = "[rbp-" + to_string(sym->offset + sym_tab->get_size(sym->type)) + ']';
+                                       
+            break;
+                     }
+        case SYM_PARAM:
             val = "[rbp-" + to_string(sym->offset) + "]";
             break;
-        case SYM_PARAM:
-            val = "[rbp+" + to_string(sym->offset) + "]";
+        case SYM_ARRAY:{
+            array_symbol *arrs = sym->get_array_symbol();
+            val = "[rbp-" + to_string(arrs->offset + sym_tab->get_size(arrs->type
+                        ) * arrs->array_cardinality) + "]";
             break;
+                       }
         default:
             cout << "DEAFAULT CASE" << endl;
             
@@ -209,12 +230,40 @@ void code_generator::fetch(sym_index sym_p, register_type dest)
 
     cout << "FETCHING:   " << val << endl; 
 
+    //out << "\t\t" << "mov\t" << dest << "," + val << endl;
     reg[dest] = val;
 }
 
 void code_generator::fetch_float(sym_index sym_p)
 {
     /* Your code here */
+    symbol *sym = sym_tab->get_symbol(sym_p);
+    sym_type tag = sym->tag;
+
+    if (sym->type != real_type) 
+        return;
+
+
+    switch (tag) {
+        case SYM_CONST:{       
+            constant_symbol *cs = sym->get_constant_symbol();
+            out << "\t\t" << "push" << "\t" << "fpu, " << sym_tab->ieee(cs->const_value.rval) << endl;
+            break;
+                       }
+        case SYM_PARAM:
+                //TODO:
+            break;
+        case SYM_VAR:
+
+            break;
+        case SYM_ARRAY:
+
+            break;
+      
+    }      
+    
+
+
 }
 
 
@@ -223,6 +272,21 @@ void code_generator::fetch_float(sym_index sym_p)
 void code_generator::store(register_type src, sym_index sym_p)
 {
     /* Your code here */
+    sym_index sym_i = sym_tab->gen_temp_var(integer_type); //vet inte om detta aer en int...
+    symbol *sym = sym_tab->get_symbol(sym_i);
+    
+   switch (sym->type) {
+       case SYM_VAR:{
+           variable_symbol *varsym = sym->get_variable_symbol();
+          // varsm->
+           break;}
+       case SYM_PARAM:
+           
+           break;
+   
+           
+   }
+    sym->value = reg[src];
 }
 
 void code_generator::store_float(sym_index sym_p)
@@ -455,7 +519,7 @@ void code_generator::expand(quad_list *q_list)
 
             fetch_float(q->sym1);
             fetch_float(q->sym2);
-            out << "\t\t" << "fcomip" << "\t" << "" ST(0), ST(1)" << endl;
+            out << "\t\t" << "fcomip" << "\t" << "ST(0), ST(1)" << endl;
             // Clear the stack
             out << "\t\t" << "fstp" << "\t" << "ST(0)" << endl;
             out << "\t\t" << "jne" << "\t" << "L" << label << endl;
@@ -590,9 +654,9 @@ void code_generator::expand(quad_list *q_list)
 
         case q_call: {
             /* Your code here */
-            find(q->sym1, RCX); 
-            out << "\t\t" << "push" << "\t" << "rcx" << endl;
-            out << "\t\t" << "mov" << "\t" << "[rcx], rax" << endl;
+             
+           // out << "\t\t" << "push" << "\t" << "rcx" << endl;
+            //out << "\t\t" << "mov" << "\t" << "[rcx], rax" << endl;
             break;
         }
         case q_rreturn:
