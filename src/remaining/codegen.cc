@@ -64,6 +64,8 @@ int code_generator::align(int frame_size)
    function. */
 void code_generator::prologue(symbol *new_env)
 {
+
+    out << "PROLOGUE ----" <<  endl; 
     int ar_size;
     int label_nr;
     // Used to count parameters.
@@ -132,6 +134,7 @@ void code_generator::prologue(symbol *new_env)
 /* This method generates assembler code for leaving a procedure or function. */
 void code_generator::epilogue(symbol *old_env)
 {
+    out << "EPILOGUE ------" << endl;
     if (assembler_trace) {
         out << "\t" << "# EPILOGUE (" << short_symbols << old_env
             << long_symbols << ")" << endl;
@@ -278,11 +281,16 @@ void code_generator::fetch_float(sym_index sym_p)
 void code_generator::store(register_type src, sym_index sym_p)
 {
     /* Your code here */
-    //out << "storing:::::::" << endl;    
+    //out << "storing:::::::" << endl;
     int level,offset;
     find(sym_p, &level, &offset);
-  
-    out << "\t\t" << "mov" << "\t" << "[rbp" << offset << "], " << reg[src] << endl;
+    
+    out << "\t\t" << "mov" << "\t" << "rcx, " << "[rbp-" << to_string(level*8) << "]" << endl;
+
+    if (offset >= 0) {  
+    out << "\t\t" << "mov" << "\t" << "[rcx+" << (offset - level*8) << "], " << reg[RAX]  << endl;
+    }else
+    out << "\t\t" << "mov" << "\t" << "[rcx" << (offset - level*8) << "], " << reg[RAX]  << endl;
    // sym_tab->get_size(arraysymbol) * arrse.arraycardinality
 }
 
@@ -299,7 +307,6 @@ void code_generator::store_float(sym_index sym_p)
     }
 }
 
-
 /* This function fetches the base address of an array. */
 void code_generator::array_address(sym_index sym_p, register_type dest)
 {
@@ -314,6 +321,10 @@ void code_generator::array_address(sym_index sym_p, register_type dest)
 /* This method expands a quad_list into assembler code, quad for quad. */
 void code_generator::expand(quad_list *q_list)
 {
+
+    out << "EXPANDING REALLITY LOL ------" << endl;
+
+
     long quad_nr = 0;       // Just to make debug output easier to read.
 
     // We use this iterator to loop through the quad list.
@@ -335,6 +346,7 @@ void code_generator::expand(quad_list *q_list)
             out << "\t" << "# QUAD " << quad_nr << ": "
                 << short_symbols << q << long_symbols << endl;
         }
+        out << "q_ TAG: " << to_string(q->op_code) << endl;
 
         // The main switch on quad type. This is where code is actually
         // generated.
@@ -343,6 +355,7 @@ void code_generator::expand(quad_list *q_list)
         case q_iload:
             out << "\t\t" << "mov" << "\t" << "rax, " << q->int1 << endl;
             store(RAX, q->sym3);
+            out << "ARE DET STORE = 1 ??" << endl;
             break;
 
         case q_inot: {
@@ -507,6 +520,8 @@ void code_generator::expand(quad_list *q_list)
             int label = sym_tab->get_next_label();
             int label2 = sym_tab->get_next_label();
 
+            out << "17 !?!?!?!" << endl; // 17
+
             fetch(q->sym1, RAX);
             fetch(q->sym2, RCX);
             out << "\t\t" << "cmp" << "\t" << "rax, rcx" << endl;
@@ -662,7 +677,7 @@ void code_generator::expand(quad_list *q_list)
             int level, offset;
             fetch(q->sym1, RCX);
             out << "\t\t" << "push" << "\t" << "[rcx]" << endl;      
-            out << "SYM! i param :  " << q->sym1 << endl;
+           // out << "SYM! i param :  " << q->sym1 << endl;
             break;
 
         case q_call: {
@@ -674,7 +689,7 @@ void code_generator::expand(quad_list *q_list)
             {
                 function_symbol *fb = sym->get_function_symbol();
                 label = fb->label_nr;
-                out << "\t\t" << "call" << "\t" << "L" << to_string(label) << endl; 
+                //out << "\t\t" << "call" << "\t" << "L" << to_string(label) << endl; 
                 //store(RAX, q->sym3);
             }else{
                 procedure_symbol *ps = sym->get_procedure_symbol();
