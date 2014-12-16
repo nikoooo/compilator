@@ -243,6 +243,7 @@ void code_generator::fetch_float(sym_index sym_p)
 
     int level,offset;
     string val;
+    long v;
     find(sym_p, &level, &offset);
 
     if (sym->type != real_type) 
@@ -252,8 +253,10 @@ void code_generator::fetch_float(sym_index sym_p)
     switch (tag) {
         case SYM_CONST:{       
             constant_symbol *cs = sym->get_constant_symbol();
-            val= sym_tab->ieee(cs->const_value.rval);
-           out << "\t\t" << "fld qword ptr" << "\t"  <<  val << endl;
+            //val= sym_tab->ieee(cs->const_value.rval);
+            v= sym_tab->ieee(cs->const_value.rval);
+            out << "\t\t" << "mov\t"  << reg[RAX] << ", " << to_string(v) << endl; 
+            out << "\t\t" << "fld qword ptr" << "\t["  << reg[RAX]  << "]"<< endl;
             return;
         }
         case SYM_VAR:
@@ -267,7 +270,6 @@ void code_generator::fetch_float(sym_index sym_p)
         val = "[rbp+" + val + "]";
     }else
         val = "[rbp" + val + "]";
-
     out << "\t\t" << "fld qword ptr" << "\t"  << val  << endl;
 }
 
