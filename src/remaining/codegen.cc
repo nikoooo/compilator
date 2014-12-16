@@ -153,7 +153,6 @@ void code_generator::epilogue(symbol *old_env)
 void code_generator::find(sym_index sym_p, int *level, int *offset)
 {
     /* Your code here */
-    cout << "%%%%%%%%%%SYM_P: " << sym_p << endl;
     symbol *sym = sym_tab->get_symbol(sym_p);
     sym_type tag = sym->tag;
     
@@ -161,7 +160,7 @@ void code_generator::find(sym_index sym_p, int *level, int *offset)
 
     if (tag == SYM_PARAM) {
         *level = sym->level;
-        *offset = sym->offset;
+        *offset = 2*8 + sym->offset;
 
     }  else if (tag == SYM_VAR) {
         *level = sym->level;
@@ -171,9 +170,10 @@ void code_generator::find(sym_index sym_p, int *level, int *offset)
 
         array_symbol *arrs = sym->get_array_symbol();
         *level = arrs->level;
-        *offset = -(sym->offset) - (sym_tab->get_size(arrs->type) * arrs->array_cardinality);
+        *offset = -(sym->offset)- (sym_tab->get_size(arrs->type) * arrs->array_cardinality);
     }
-
+  //  out << "FINDING::: level, offset        = " << to_string(*level) << ", " << to_string(*offset) << endl;
+   // out << sym << endl;
     //*level = sym->level;
 }
 
@@ -182,9 +182,10 @@ void code_generator::find(sym_index sym_p, int *level, int *offset)
  */
 void code_generator::frame_address(int level, const register_type dest)
 {
+    //out << "FRAME ADDRESS: " << endl;
     /* Your code here */
     //COULD be off-by-one, step this shit level by level ...
-    out << "mov" << "\t\t" << reg[dest] << "\t" << "[rbp-" << level*8 << "]" <<  endl;
+ //   out << "\t\t" << "mov" << "\t" << reg[dest] << "\t" << "[rbp-" << level*8 << "]" <<  endl;
     
    // out << "mov" << "\t\t" << reg[dest] << "\t" << "[rbp" << level * frame_size_i << endl;
 
@@ -199,11 +200,11 @@ void code_generator::fetch(sym_index sym_p, register_type dest)
     string val = "";
     int level,offset;
     find(sym_p, &level, &offset);
-
+//out << "FECHTIN......" << endl;
     if (sym == NULL) {
         return;
     }
-    cout << "SYM:   " << sym << endl; 
+    
     switch (sym->tag) {
 
         case SYM_CONST:{
@@ -253,7 +254,7 @@ void code_generator::fetch_float(sym_index sym_p)
         case SYM_CONST:{       
             constant_symbol *cs = sym->get_constant_symbol();
             val= sym_tab->ieee(cs->const_value.rval);
-           out <<  "fld" << "\t"  <<  val << endl;
+           out << "\t\t" << "fld" << "\t"  <<  val << endl;
             return;
         }
         case SYM_VAR:
@@ -268,7 +269,7 @@ void code_generator::fetch_float(sym_index sym_p)
     }else
         val = "[rbp" + val + "]";
 
-            out << "fld" << "\t\t"  << val  << endl;
+    out << "\t\t" << "fld" << "\t"  << val  << endl;
 }
 
 
@@ -277,11 +278,11 @@ void code_generator::fetch_float(sym_index sym_p)
 void code_generator::store(register_type src, sym_index sym_p)
 {
     /* Your code here */
-    
+    //out << "storing:::::::" << endl;    
     int level,offset;
     find(sym_p, &level, &offset);
   
-    out << "mov" << "\t\t" << "[rbp" << offset << "]\t" << reg[src] << endl;
+    out << "\t\t" << "mov" << "\t" << "[rbp" << offset << "], " << reg[src] << endl;
    // sym_tab->get_size(arraysymbol) * arrse.arraycardinality
 }
 
@@ -292,9 +293,9 @@ void code_generator::store_float(sym_index sym_p)
     find(sym_p, &level, &offset);
     //DOES THE TYPE MATTER? should only be pos?
     if (offset >= 0) {        
-        out << "fstp" << "\t" << "[rbp+" << offset << "]\t" << endl;   
+        out << "\t\tfstp" << "\t" << "[rbp+" << offset << "]\t" << endl;   
     }else{
-        out << "fstp" << "\t" << "[rbp" << offset << "]\t" << endl;   
+        out << "\t\tfstp" << "\t" << "[rbp" << offset << "]\t" << endl;   
     }
 }
 
@@ -307,7 +308,7 @@ void code_generator::array_address(sym_index sym_p, register_type dest)
     find(sym_p, &level, &offset);
     
     //should only be -
-    out << "mov" << "\t\t" << reg[dest] << "[rbp" << offset << "]" << endl; 
+     out << "\t\t" << "mov" << "\t" << reg[dest] << ", [rbp" << offset << "]" << endl; 
 }
 
 /* This method expands a quad_list into assembler code, quad for quad. */
@@ -658,14 +659,34 @@ void code_generator::expand(quad_list *q_list)
 
         case q_param:
             /* Your code here */
+            int level, offset;
+            fetch(q->sym1, RCX);
+            out << "\t\t" << "push" << "\t" << "[rcx]" << endl;      
+            out << "SYM! i param :  " << q->sym1 << endl;
             break;
 
         case q_call: {
             /* Your code here */
+            symbol *sym = sym_tab->get_symbol(q->sym1);
+            int label;
+            out << "SYM! i CALL :  " << q->sym1 << endl;
+            if (q->sym3 != 0) // is function call
+            {
+                function_symbol *fb = sym->get_function_symbol();
+                label = fb->label_nr;
+                out << "\t\t" << "call" << "\t" << "L" << to_string(label) << endl; 
+                //store(RAX, q->sym3);
+            }else{
+                procedure_symbol *ps = sym->get_procedure_symbol();
+                label = ps->label_nr;
+                out << "\t\t" << "call" << "\t" << "L" << to_string(label) << endl; 
+            }
+
+
+            
 
             //int label = sym_tab->get_next_label();
             //int label2 = sym_tab->get_next_label();
-            //out << "jmp" << "\t\t" << "L:" + label << endl; 
            // out << "L:" << to_string(label2) << endl;
            // out << "\t\t" << "push" << "\t" << "rcx" << endl;
             //out << "\t\t" << "mov" << "\t" << "[rcx], rax" << endl;

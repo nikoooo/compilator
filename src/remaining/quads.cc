@@ -479,7 +479,7 @@ sym_index ast_procedurecall::generate_quads(quad_list &q)
     {
      parameter_list->generate_parameter_list(q, NULL, &nr_params);
     }
-    q += new quadruple(q_call, id->sym_p, nr_params, NULL_SYM);
+    q += new quadruple(q_call, id->sym_p, nr_params, 0);
     return NULL_SYM;
 }
 
@@ -608,8 +608,8 @@ sym_index ast_return::generate_quads(quad_list &q)
 {
     USE_Q;
     /* Your code here */
-    if (value == NULL) {
-        q += new quadruple(q_ireturn, q.last_label, NULL_SYM, NULL_SYM );
+    if (value == NULL) { // NULL => return from a procdude
+        q += new quadruple(q_ireturn, q.last_label, 0, NULL_SYM );
         return 0;
     }
 
