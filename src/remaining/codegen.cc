@@ -65,7 +65,7 @@ int code_generator::align(int frame_size)
 void code_generator::prologue(symbol *new_env)
 {
 
-    out << "PROLOGUE ----" <<  endl; 
+    //out << "PROLOGUE ----" <<  endl; 
     int ar_size;
     int label_nr;
     // Used to count parameters.
@@ -134,7 +134,6 @@ void code_generator::prologue(symbol *new_env)
 /* This method generates assembler code for leaving a procedure or function. */
 void code_generator::epilogue(symbol *old_env)
 {
-    out << "EPILOGUE ------" << endl;
     if (assembler_trace) {
         out << "\t" << "# EPILOGUE (" << short_symbols << old_env
             << long_symbols << ")" << endl;
@@ -172,7 +171,6 @@ void code_generator::find(sym_index sym_p, int *level, int *offset)
         array_symbol *arrs = sym->get_array_symbol();
         *level = arrs->level;
         *offset = (sym->offset)* (*level+1);
-        out << "OFFSET: " << *offset << endl;
     } else if (tag == SYM_CONST) {
         constant_symbol *cs = sym->get_constant_symbol();
         *level = cs->level;
@@ -255,7 +253,7 @@ void code_generator::fetch_float(sym_index sym_p)
         case SYM_CONST:{       
             constant_symbol *cs = sym->get_constant_symbol();
             val= sym_tab->ieee(cs->const_value.rval);
-           out << "\t\t" << "fld" << "\t"  <<  val << endl;
+           out << "\t\t" << "fld qword ptr" << "\t"  <<  val << endl;
             return;
         }
         case SYM_VAR:
@@ -270,7 +268,7 @@ void code_generator::fetch_float(sym_index sym_p)
     }else
         val = "[rbp" + val + "]";
 
-    out << "\t\t" << "fld" << "\t"  << val  << endl;
+    out << "\t\t" << "fld qword ptr" << "\t"  << val  << endl;
 }
 
 
@@ -305,9 +303,9 @@ void code_generator::store_float(sym_index sym_p)
     find(sym_p, &level, &offset);
     //DOES THE TYPE MATTER? should only be pos?
     if (offset >= 0) {        
-        out << "\t\tfstp" << "\t" << "[rbp+" << offset << "]\t" << endl;   
+        out << "\t\tfstp qword ptr" << "\t" << "[rbp+" << offset << "]\t" << endl;   
     }else{
-        out << "\t\tfstp" << "\t" << "[rbp" << offset << "]\t" << endl;   
+        out << "\t\tfstp qword ptr" << "\t" << "[rbp" << offset << "]\t" << endl;   
     }
 }
 
@@ -320,7 +318,7 @@ void code_generator::array_address(sym_index sym_p, register_type dest)
     frame_address(level, RCX);
 
     //should only be -
-     out << "\t\t" << "sub" << "\t" << "rcx, " << offset << endl; 
+     out << "\t\t" << "sub" << "\t" << "rcx, " << (offset + 8) << endl; 
 
      out << "\t\t" << "mov" << "\t" << reg[dest] << ", rcx" << endl; 
 }
@@ -328,9 +326,6 @@ void code_generator::array_address(sym_index sym_p, register_type dest)
 /* This method expands a quad_list into assembler code, quad for quad. */
 void code_generator::expand(quad_list *q_list)
 {
-
-    out << "EXPANDING REALLITY LOL ------" << endl;
-
 
     long quad_nr = 0;       // Just to make debug output easier to read.
 
