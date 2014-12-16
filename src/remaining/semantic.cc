@@ -496,10 +496,12 @@ sym_index ast_uminus::type_check()
 sym_index ast_not::type_check()
 {
 	/* Your code here */
+    sym_index s = expr->type_check(); 
 	if(expr->type != integer_type) {
-		type_error(pos) << "NOT operand must be an int." << endl;
-	}
-	return integer_type;
+		
+        type_error(pos) << "NOT operand must be an int." << endl;
+        	}
+	return s;
 }
 
 
