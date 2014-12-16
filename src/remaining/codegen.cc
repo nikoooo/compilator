@@ -171,7 +171,8 @@ void code_generator::find(sym_index sym_p, int *level, int *offset)
     }  else if (tag == SYM_ARRAY) {
         array_symbol *arrs = sym->get_array_symbol();
         *level = arrs->level;
-        *offset = -(sym->offset)- (sym_tab->get_size(arrs->type) * arrs->array_cardinality);
+        *offset = (sym->offset)* (*level+1);
+        out << "OFFSET: " << *offset << endl;
     } else if (tag == SYM_CONST) {
         constant_symbol *cs = sym->get_constant_symbol();
         *level = cs->level;
@@ -281,7 +282,14 @@ void code_generator::store(register_type src, sym_index sym_p)
     //out << "storing:::::::" << endl;
     int level,offset;
     find(sym_p, &level, &offset);
-    frame_address(level, RCX); 
+    frame_address(level, RCX);
+
+    symbol *sym = sym_tab->get_symbol(sym_p);
+
+    if (sym->tag == SYM_PARAM) {
+        out << "\t\t" << "mov" << "\t" << "[rcx+" << (offset) << "], " << reg[src]  << endl;
+        return;
+    }
 
     if (offset >= 0) {  
     out << "\t\t" << "mov" << "\t" << "[rcx+" << (offset - level*8) << "], " << reg[src]  << endl;
@@ -309,9 +317,12 @@ void code_generator::array_address(sym_index sym_p, register_type dest)
     /* Your code here */
     int level,offset;
     find(sym_p, &level, &offset);
-    
+    frame_address(level, RCX);
+
     //should only be -
-     out << "\t\t" << "mov" << "\t" << reg[dest] << ", [rbp" << offset << "]" << endl; 
+     out << "\t\t" << "sub" << "\t" << "rcx, " << offset << endl; 
+
+     out << "\t\t" << "mov" << "\t" << reg[dest] << ", rcx" << endl; 
 }
 
 /* This method expands a quad_list into assembler code, quad for quad. */
