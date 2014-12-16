@@ -199,7 +199,7 @@ void code_generator::fetch(sym_index sym_p, register_type dest)
     if (sym == NULL) {
         return;
     }
-    if (sym->tag != SYM_CONST) frame_address(level, RCX);
+    if (sym->tag != SYM_CONST)  frame_address(level, RCX);
 
     switch (sym->tag) {
 
@@ -679,27 +679,24 @@ void code_generator::expand(quad_list *q_list)
             {
                 function_symbol *fb = sym->get_function_symbol();
                 label = fb->label_nr;
-                //out << "\t\t" << "call" << "\t" << "L" << to_string(label) << endl; 
-                //store(RAX, q->sym3);
             }else{
                 procedure_symbol *ps = sym->get_procedure_symbol();
                 label = ps->label_nr;
                 out << "\t\t" << "call" << "\t" << "L" << to_string(label) << endl; 
             }
 
+            // pop params from stack
+            for (int i = 0; i < q->int2; i++) {
+                out << "\t\t" << "add\trsp, 8" << endl;
+            }
 
-            
-
-            //int label = sym_tab->get_next_label();
-            //int label2 = sym_tab->get_next_label();
-           // out << "L:" << to_string(label2) << endl;
-           // out << "\t\t" << "push" << "\t" << "rcx" << endl;
-            //out << "\t\t" << "mov" << "\t" << "[rcx], rax" << endl;
             break;
         }
         case q_rreturn:
         case q_ireturn:
-            fetch(q->sym2, RAX);
+            if (q->int2 != 0) { // is not proc
+                fetch(q->sym2, RAX);
+            }
             out << "\t\t" << "jmp" << "\t" << "L" << q->int1 << endl;
             break;
 
@@ -760,6 +757,7 @@ void code_generator::expand(quad_list *q_list)
 
         // Get the next quad from the list.
         q = ql_iterator->get_next();
+        out << flush;
     }
 
     // Flush the generated code to file.

@@ -575,18 +575,27 @@ sym_index ast_if::generate_quads(quad_list &q)
 {
     USE_Q;
     /* Your code here */
-    int bottom = sym_tab->get_next_label();
+    int bottom;
+    if (elsif_list != NULL || else_body != NULL)
+        bottom = sym_tab->get_next_label();
     int endif   = sym_tab->get_next_label();
     
     sym_index con = condition->generate_quads(q);
     // if (...)
-    q += new quadruple(q_jmpf, bottom, con, NULL_SYM);
+
+    if (elsif_list != NULL || else_body != NULL)
+        q += new quadruple(q_jmpf, bottom, con, NULL_SYM);
+    else
+        q += new quadruple(q_jmpf, endif, con, NULL_SYM);
+
     // ...statements...
     body->generate_quads(q);
     // always go to end of all elsifs / elses when entering one
-    q += new quadruple(q_jmp, endif, NULL_SYM, NULL_SYM);
     // elsif
-    q += new quadruple(q_labl, bottom, NULL_SYM, NULL_SYM);
+    if (elsif_list != NULL || else_body != NULL) {
+        q += new quadruple(q_jmp, endif, NULL_SYM, NULL_SYM);
+        q += new quadruple(q_labl, bottom, NULL_SYM, NULL_SYM);
+    }
     
     if (elsif_list != NULL) {
         elsif_list->generate_quads_and_jump(q, endif);
