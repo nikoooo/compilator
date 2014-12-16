@@ -216,9 +216,13 @@ void code_generator::fetch(sym_index sym_p, register_type dest)
             return;
         }
         case SYM_VAR:
+            val = offset - level*8;
+            break;
         case SYM_PARAM:
-        case SYM_ARRAY:
             val = offset;
+            break;
+        case SYM_ARRAY:
+            val = offset - level*8;
             break;
         default:
             return;
