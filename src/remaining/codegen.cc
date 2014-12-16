@@ -153,6 +153,7 @@ void code_generator::epilogue(symbol *old_env)
 void code_generator::find(sym_index sym_p, int *level, int *offset)
 {
     /* Your code here */
+    cout << "%%%%%%%%%%SYM_P: " << sym_p << endl;
     symbol *sym = sym_tab->get_symbol(sym_p);
     sym_type tag = sym->tag;
     
@@ -183,6 +184,7 @@ void code_generator::frame_address(int level, const register_type dest)
 {
     /* Your code here */
     //COULD be off-by-one, step this shit level by level ...
+    out << "mov" << "\t\t" << reg[dest] << "\t" << "[rbp-" << level*8 << "]" <<  endl;
     
    // out << "mov" << "\t\t" << reg[dest] << "\t" << "[rbp" << level * frame_size_i << endl;
 
@@ -201,7 +203,7 @@ void code_generator::fetch(sym_index sym_p, register_type dest)
     if (sym == NULL) {
         return;
     }
-   
+    cout << "SYM:   " << sym << endl; 
     switch (sym->tag) {
 
         case SYM_CONST:{
@@ -220,13 +222,13 @@ void code_generator::fetch(sym_index sym_p, register_type dest)
             val = to_string(offset);
             break;
         default:
-            fatal("Landed in default fatal. In fetch!") ;
+            return;
             
     }
     if (offset >=0) {
         val = "[rbp+" + val + "]";
     }else
-        val = "[rbp-" + val + "]";
+        val = "[rbp" + val + "]";
 
     //cout << "FETCHING:   " << val << endl; 
 
@@ -240,7 +242,7 @@ void code_generator::fetch_float(sym_index sym_p)
     sym_type tag = sym->tag;
 
     int level,offset;
-    long v;
+    string val;
     find(sym_p, &level, &offset);
 
     if (sym->type != real_type) 
@@ -250,22 +252,23 @@ void code_generator::fetch_float(sym_index sym_p)
     switch (tag) {
         case SYM_CONST:{       
             constant_symbol *cs = sym->get_constant_symbol();
-            v = sym_tab->ieee(cs->const_value.rval);
-            out << "\t\t" << "fld" << "\t"  <<  v << endl;
+            val= sym_tab->ieee(cs->const_value.rval);
+           out <<  "fld" << "\t"  <<  val << endl;
             return;
         }
-        case SYM_PARAM:
         case SYM_VAR:
+        case SYM_PARAM:
         case SYM_ARRAY:
-            v = offset;
+            val = to_string(offset);
             break;
       
     }      
-        if (offset >=0) 
-            out << "fld" << "\t\t+"  << v << endl;
-        else
-            out << "fld" << "\t\t"  << v << endl;
+    if (offset >=0) {
+        val = "[rbp+" + val + "]";
+    }else
+        val = "[rbp" + val + "]";
 
+            out << "fld" << "\t\t"  << val  << endl;
 }
 
 
@@ -278,8 +281,8 @@ void code_generator::store(register_type src, sym_index sym_p)
     int level,offset;
     find(sym_p, &level, &offset);
   
-    out << "mov" << "\t\t" << "[rbp+" << offset << "]\t" << reg[src] << endl;
-   
+    out << "mov" << "\t\t" << "[rbp" << offset << "]\t" << reg[src] << endl;
+   // sym_tab->get_size(arraysymbol) * arrse.arraycardinality
 }
 
 void code_generator::store_float(sym_index sym_p)
@@ -287,13 +290,12 @@ void code_generator::store_float(sym_index sym_p)
     /* Your code here */
     int level,offset;
     find(sym_p, &level, &offset);
-    //DOES THE TYPE MATTER?
+    //DOES THE TYPE MATTER? should only be pos?
     if (offset >= 0) {        
-    out << "mov" << "\t" << "[rbp+" << offset << "]\t" << "ST(0)" << endl;   
+        out << "fstp" << "\t" << "[rbp+" << offset << "]\t" << endl;   
     }else{
-    out << "mov" << "\t" << "[rbp" << offset << "]\t" << "ST(0)" << endl;   
+        out << "fstp" << "\t" << "[rbp" << offset << "]\t" << endl;   
     }
-    //fstp ST(0)
 }
 
 
@@ -306,14 +308,12 @@ void code_generator::array_address(sym_index sym_p, register_type dest)
     
     //should only be -
     out << "mov" << "\t\t" << reg[dest] << "[rbp" << offset << "]" << endl; 
-
 }
 
 /* This method expands a quad_list into assembler code, quad for quad. */
 void code_generator::expand(quad_list *q_list)
 {
     long quad_nr = 0;       // Just to make debug output easier to read.
-    
 
     // We use this iterator to loop through the quad list.
     quad_list_iterator *ql_iterator = new quad_list_iterator(q_list);
