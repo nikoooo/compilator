@@ -160,24 +160,23 @@ void code_generator::find(sym_index sym_p, int *level, int *offset)
     sym_type tag = sym->tag;
     
     *offset = sym->offset;
-
     if (tag == SYM_PARAM) {
         *level = sym->level;
-        *offset = 2*8 + sym->offset;
+        *offset = (*level)*8 + sym->offset;
 
     }  else if (tag == SYM_VAR) {
         *level = sym->level;
         *offset = -(sym->offset) - sym_tab->get_size(sym->type);
 
     }  else if (tag == SYM_ARRAY) {
-
         array_symbol *arrs = sym->get_array_symbol();
         *level = arrs->level;
         *offset = -(sym->offset)- (sym_tab->get_size(arrs->type) * arrs->array_cardinality);
+    } else if (tag == SYM_CONST) {
+        constant_symbol *cs = sym->get_constant_symbol();
+        *level = cs->level;
+        *offset = -(sym->offset) - sym_tab->get_size(sym->type);
     }
-  //  out << "FINDING::: level, offset        = " << to_string(*level) << ", " << to_string(*offset) << endl;
-   // out << sym << endl;
-    //*level = sym->level;
 }
 
 /*
@@ -200,8 +199,7 @@ void code_generator::fetch(sym_index sym_p, register_type dest)
     if (sym == NULL) {
         return;
     }
-    
-    frame_address(level, RCX);
+    if (sym->tag != SYM_CONST) frame_address(level, RCX);
 
     switch (sym->tag) {
 
@@ -222,7 +220,7 @@ void code_generator::fetch(sym_index sym_p, register_type dest)
             val = offset;
             break;
         case SYM_ARRAY:
-            val = offset - level*8;
+            val = offset - 9999999;
             break;
         default:
             return;
@@ -669,8 +667,8 @@ void code_generator::expand(quad_list *q_list)
         case q_param:
             /* Your code here */
             int level, offset;
-            fetch(q->sym1, RCX);
-            out << "\t\t" << "push" << "\t" << "[rcx]" << endl;      
+            fetch(q->sym1, RAX);
+            out << "\t\t" << "push" << "\t" << "rax" << endl;      
             break;
 
         case q_call: {
