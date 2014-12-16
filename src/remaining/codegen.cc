@@ -185,13 +185,7 @@ void code_generator::find(sym_index sym_p, int *level, int *offset)
  */
 void code_generator::frame_address(int level, const register_type dest)
 {
-    //out << "FRAME ADDRESS: " << endl;
-    /* Your code here */
-    //COULD be off-by-one, step this shit level by level ...
- //   out << "\t\t" << "mov" << "\t" << reg[dest] << "\t" << "[rbp-" << level*8 << "]" <<  endl;
-    
-   // out << "mov" << "\t\t" << reg[dest] << "\t" << "[rbp" << level * frame_size_i << endl;
-
+    out << "\t\t" << "mov" << "\t" << reg[dest] << ", " << "[rbp-" << to_string(level*8) << "]" << endl;
 }
 
 /* This function fetches the value of a variable or a constant into a
@@ -200,43 +194,44 @@ void code_generator::fetch(sym_index sym_p, register_type dest)
 {
     /* Your code here */
     symbol *sym = sym_tab->get_symbol(sym_p);
-    string val = "";
+    long val;
     int level,offset;
     find(sym_p, &level, &offset);
-//out << "FECHTIN......" << endl;
     if (sym == NULL) {
         return;
     }
     
+    frame_address(level, RCX);
+
     switch (sym->tag) {
 
         case SYM_CONST:{
             constant_symbol *consym = sym->get_constant_symbol();
             if (consym->type == integer_type) {
-                val = to_string(consym->const_value.ival);
+                val = consym->const_value.ival;
             } else {
-                val = to_string(sym_tab->ieee(consym->const_value.rval));
+                val = sym_tab->ieee(consym->const_value.rval);
             }
-            out << "\t\t" << "mov\t" << reg[dest] << "," + val << endl;
+            out << "\t\t" << "mov\t" << reg[dest] << ", " << to_string(val) << endl;
             return;
         }
         case SYM_VAR:
         case SYM_PARAM:
         case SYM_ARRAY:
-            val = to_string(offset);
+            val = offset;
             break;
         default:
             return;
             
     }
+
+    string str;
     if (offset >=0) {
-        val = "[rbp+" + val + "]";
+        str = "[rcx+" + to_string(val) + "]";
     }else
-        val = "[rbp" + val + "]";
+        str = "[rcx" + to_string(val) + "]";
 
-    //cout << "FETCHING:   " << val << endl; 
-
-    out << "\t\t" << "mov\t" << reg[dest] << "," + val << endl;
+    out << "\t\t" << "mov\t" << reg[dest] << ", " << str << endl;
 }
 
 void code_generator::fetch_float(sym_index sym_p)
@@ -284,13 +279,12 @@ void code_generator::store(register_type src, sym_index sym_p)
     //out << "storing:::::::" << endl;
     int level,offset;
     find(sym_p, &level, &offset);
-    
-    out << "\t\t" << "mov" << "\t" << "rcx, " << "[rbp-" << to_string(level*8) << "]" << endl;
+    frame_address(level, RCX); 
 
     if (offset >= 0) {  
-    out << "\t\t" << "mov" << "\t" << "[rcx+" << (offset - level*8) << "], " << reg[RAX]  << endl;
+    out << "\t\t" << "mov" << "\t" << "[rcx+" << (offset - level*8) << "], " << reg[src]  << endl;
     }else
-    out << "\t\t" << "mov" << "\t" << "[rcx" << (offset - level*8) << "], " << reg[RAX]  << endl;
+    out << "\t\t" << "mov" << "\t" << "[rcx" << (offset - level*8) << "], " << reg[src]  << endl;
    // sym_tab->get_size(arraysymbol) * arrse.arraycardinality
 }
 
@@ -346,7 +340,6 @@ void code_generator::expand(quad_list *q_list)
             out << "\t" << "# QUAD " << quad_nr << ": "
                 << short_symbols << q << long_symbols << endl;
         }
-        out << "q_ TAG: " << to_string(q->op_code) << endl;
 
         // The main switch on quad type. This is where code is actually
         // generated.
@@ -355,7 +348,6 @@ void code_generator::expand(quad_list *q_list)
         case q_iload:
             out << "\t\t" << "mov" << "\t" << "rax, " << q->int1 << endl;
             store(RAX, q->sym3);
-            out << "ARE DET STORE = 1 ??" << endl;
             break;
 
         case q_inot: {
@@ -520,8 +512,6 @@ void code_generator::expand(quad_list *q_list)
             int label = sym_tab->get_next_label();
             int label2 = sym_tab->get_next_label();
 
-            out << "17 !?!?!?!" << endl; // 17
-
             fetch(q->sym1, RAX);
             fetch(q->sym2, RCX);
             out << "\t\t" << "cmp" << "\t" << "rax, rcx" << endl;
@@ -677,14 +667,12 @@ void code_generator::expand(quad_list *q_list)
             int level, offset;
             fetch(q->sym1, RCX);
             out << "\t\t" << "push" << "\t" << "[rcx]" << endl;      
-           // out << "SYM! i param :  " << q->sym1 << endl;
             break;
 
         case q_call: {
             /* Your code here */
             symbol *sym = sym_tab->get_symbol(q->sym1);
             int label;
-            out << "SYM! i CALL :  " << q->sym1 << endl;
             if (q->sym3 != 0) // is function call
             {
                 function_symbol *fb = sym->get_function_symbol();
