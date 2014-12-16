@@ -219,7 +219,7 @@ void code_generator::fetch(sym_index sym_p, register_type dest)
             val = offset;
             break;
         case SYM_ARRAY:
-            val = offset - 9999999;
+            val = offset - level*8; //TODO:
             break;
         default:
             return;
