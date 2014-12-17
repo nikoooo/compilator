@@ -165,7 +165,7 @@ void code_generator::find(sym_index sym_p, int *level, int *offset)
 
     }  else if (tag == SYM_VAR) {
         *level = sym->level;
-        *offset = -(sym->offset) - sym_tab->get_size(sym->type);
+        *offset = -(sym->offset) - sym_tab->get_size(sym->type) - (*level) * 8;
 
     }  else if (tag == SYM_ARRAY) {
         array_symbol *arrs = sym->get_array_symbol();
@@ -213,7 +213,7 @@ void code_generator::fetch(sym_index sym_p, register_type dest)
             return;
         }
         case SYM_VAR:
-            val = offset - level*8;
+            val = offset;
             break;
         case SYM_PARAM:
             val = offset;
@@ -248,6 +248,8 @@ void code_generator::fetch_float(sym_index sym_p)
 
     if (sym->type != real_type) 
         return;
+    
+    frame_address(level, RCX);
 
 
     switch (tag) {
@@ -256,21 +258,29 @@ void code_generator::fetch_float(sym_index sym_p)
             //val= sym_tab->ieee(cs->const_value.rval);
             v= sym_tab->ieee(cs->const_value.rval);
             out << "\t\t" << "mov\t"  << reg[RAX] << ", " << to_string(v) << endl; 
-            out << "\t\t" << "fld qword ptr" << "\t["  << reg[RAX]  << "]"<< endl;
+            out << "\t\t" << "fld\tqword ptr" << "\t["  << reg[RAX]  << "]"<< endl;
             return;
         }
         case SYM_VAR:
+                out << "SYMVAR*****" << endl;
+            val = to_string(offset);
+            break;
         case SYM_PARAM:
+            out << "SYMPARAM" << endl;
+            val = to_string(offset);
+            break;
         case SYM_ARRAY:
             val = to_string(offset);
+            out << "ARRAY"<< endl;
             break;
       
     }      
     if (offset >=0) {
-        val = "[rbp+" + val + "]";
+        val = "[rcx+" + val + "]";
     }else
-        val = "[rbp" + val + "]";
-    out << "\t\t" << "fld qword ptr" << "\t"  << val  << endl;
+        val = "[rcx" + val + "]";
+    out << "\t\t" << "fld\tqword ptr" << "\t"  << val  << endl;
+    out << "------------------" << endl;
 }
 
 
@@ -292,9 +302,9 @@ void code_generator::store(register_type src, sym_index sym_p)
     }
 
     if (offset >= 0) {  
-    out << "\t\t" << "mov" << "\t" << "[rcx+" << (offset - level*8) << "], " << reg[src]  << endl;
+    out << "\t\t" << "mov" << "\t" << "[rcx+" << (offset) << "], " << reg[src]  << endl;
     }else
-    out << "\t\t" << "mov" << "\t" << "[rcx" << (offset - level*8) << "], " << reg[src]  << endl;
+    out << "\t\t" << "mov" << "\t" << "[rcx" << (offset) << "], " << reg[src]  << endl;
    // sym_tab->get_size(arraysymbol) * arrse.arraycardinality
 }
 
@@ -303,11 +313,13 @@ void code_generator::store_float(sym_index sym_p)
     /* Your code here */
     int level,offset;
     find(sym_p, &level, &offset);
+    frame_address(level,RCX);
+
     //DOES THE TYPE MATTER? should only be pos?
     if (offset >= 0) {        
-        out << "\t\tfstp qword ptr" << "\t" << "[rbp+" << offset << "]\t" << endl;   
+        out << "\t\tfstp qword ptr" << "\t" << "[rcx+" << offset << "]\t" << endl;   
     }else{
-        out << "\t\tfstp qword ptr" << "\t" << "[rbp" << offset << "]\t" << endl;   
+        out << "\t\tfstp qword ptr" << "\t" << "[rcx" << to_string(offset) << "]\t" << endl;   
     }
 }
 
@@ -690,13 +702,11 @@ void code_generator::expand(quad_list *q_list)
             }else{
                 procedure_symbol *ps = sym->get_procedure_symbol();
                 label = ps->label_nr;
-                out << "\t\t" << "call" << "\t" << "L" << to_string(label) << endl; 
             }
 
+                out << "\t\t" << "call" << "\t" << "L" << to_string(label) << endl; 
             // pop params from stack
-            for (int i = 0; i < q->int2; i++) {
-                out << "\t\t" << "add\trsp, 8" << endl;
-            }
+                out << "\t\t" << "add\trsp, " << to_string((q->int2)*8) << endl;
 
             break;
         }
