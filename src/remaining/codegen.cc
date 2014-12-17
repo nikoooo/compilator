@@ -230,9 +230,9 @@ void code_generator::fetch(sym_index sym_p, register_type dest)
     string str;
     if (offset >=0) {
         str = "[rcx+" + to_string(val) + "]";
-    }else
+    }else{
         str = "[rcx" + to_string(val) + "]";
-
+    }
     out << "\t\t" << "mov\t" << reg[dest] << ", " << str << endl;
 }
 
@@ -258,8 +258,11 @@ void code_generator::fetch_float(sym_index sym_p)
             constant_symbol *cs = sym->get_constant_symbol();
             //val= sym_tab->ieee(cs->const_value.rval);
             v= sym_tab->ieee(cs->const_value.rval);
-            out << "\t\t" << "mov\t"  << reg[RAX] << ", " << to_string(v) << endl; 
-            out << "\t\t" << "fld\tqword ptr" << "\t["  << reg[RAX]  << "]"<< endl;
+            out << "\t\t" << "mov\t"  << reg[RCX] << ", " << to_string(v) << endl; 
+            out << "\t\t" << "sub\trsp, 8" << endl;
+            out << "\t\t" << "mov\t"  << "[rsp]\t" << ", " << reg[RCX] << endl; 
+            out << "\t\t" << "fld\tqword ptr" << "\t["   << "rsp]"<< endl;
+            out << "\t\t" << "add\trsp, 8" << endl;
             return;
         }
         case SYM_VAR:
@@ -292,7 +295,6 @@ void code_generator::store(register_type src, sym_index sym_p)
     frame_address(level, RCX);
 
     symbol *sym = sym_tab->get_symbol(sym_p);
-
     if (sym->tag == SYM_PARAM) {
         out << "\t\t" << "mov" << "\t" << "[rcx+" << (offset) << "], " << reg[src]  << endl;
         return;
@@ -704,6 +706,11 @@ void code_generator::expand(quad_list *q_list)
                 out << "\t\t" << "call" << "\t" << "L" << to_string(label) << endl; 
             // pop params from stack
                 out << "\t\t" << "add\trsp, " << to_string((q->int2)*8) << endl;
+            
+            if (q->sym3 != 0) // is function call
+            {
+                store(RAX, q->sym3);
+            }
 
             break;
         }
