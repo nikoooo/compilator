@@ -170,7 +170,8 @@ void code_generator::find(sym_index sym_p, int *level, int *offset)
     }  else if (tag == SYM_ARRAY) {
         array_symbol *arrs = sym->get_array_symbol();
         *level = arrs->level;
-        *offset = (sym->offset)* (*level+1);
+        //*offset = -(sym->offset) - level*8;
+        *offset = -(sym->offset) - sym_tab->get_size(sym->type)*arrs->array_cardinality - (*level) * 8;
     } else if (tag == SYM_CONST) {
         constant_symbol *cs = sym->get_constant_symbol();
         *level = cs->level;
@@ -219,7 +220,7 @@ void code_generator::fetch(sym_index sym_p, register_type dest)
             val = offset;
             break;
         case SYM_ARRAY:
-            val = offset - level*8; //TODO:
+            val = offset; //TODO:
             break;
         default:
             return;
@@ -262,16 +263,13 @@ void code_generator::fetch_float(sym_index sym_p)
             return;
         }
         case SYM_VAR:
-                out << "SYMVAR*****" << endl;
             val = to_string(offset);
             break;
         case SYM_PARAM:
-            out << "SYMPARAM" << endl;
             val = to_string(offset);
             break;
         case SYM_ARRAY:
             val = to_string(offset);
-            out << "ARRAY"<< endl;
             break;
       
     }      
@@ -280,7 +278,6 @@ void code_generator::fetch_float(sym_index sym_p)
     }else
         val = "[rcx" + val + "]";
     out << "\t\t" << "fld\tqword ptr" << "\t"  << val  << endl;
-    out << "------------------" << endl;
 }
 
 
