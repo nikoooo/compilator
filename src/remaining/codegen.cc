@@ -171,7 +171,9 @@ void code_generator::find(sym_index sym_p, int *level, int *offset)
         array_symbol *arrs = sym->get_array_symbol();
         *level = arrs->level;
         //*offset = -(sym->offset) - level*8;
-        *offset = -(sym->offset) - sym_tab->get_size(sym->type)*arrs->array_cardinality - (*level) * 8;
+        //*offset = -(sym->offset) - sym_tab->get_size(sym->type)*arrs->array_cardinality - (*level) * 8;
+        *offset = (sym->offset) + (*level+1) * 8;
+        //out << "offset  = " << sym->offset << ",  Type size = " << sym_tab->get_size(sym->type) << ",   Level = " << *level << endl;
     } else if (tag == SYM_CONST) {
         constant_symbol *cs = sym->get_constant_symbol();
         *level = cs->level;
@@ -226,7 +228,6 @@ void code_generator::fetch(sym_index sym_p, register_type dest)
             return;
             
     }
-
     string str;
     if (offset >=0) {
         str = "[rcx+" + to_string(val) + "]";
@@ -331,7 +332,7 @@ void code_generator::array_address(sym_index sym_p, register_type dest)
     frame_address(level, RCX);
 
     //should only be -
-     out << "\t\t" << "sub" << "\t" << "rcx, " << (offset + 8) << endl; 
+     out << "\t\t" << "sub" << "\t" << "rcx, " << offset << endl; 
 
      out << "\t\t" << "mov" << "\t" << reg[dest] << ", rcx" << endl; 
 }
