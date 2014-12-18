@@ -170,10 +170,7 @@ void code_generator::find(sym_index sym_p, int *level, int *offset)
     }  else if (tag == SYM_ARRAY) {
         array_symbol *arrs = sym->get_array_symbol();
         *level = arrs->level;
-        //*offset = -(sym->offset) - level*8;
-        //*offset = -(sym->offset) - sym_tab->get_size(sym->type)*arrs->array_cardinality - (*level) * 8;
         *offset = (sym->offset) + (*level+1) * 8;
-        //out << "offset  = " << sym->offset << ",  Type size = " << sym_tab->get_size(sym->type) << ",   Level = " << *level << endl;
     } else if (tag == SYM_CONST) {
         constant_symbol *cs = sym->get_constant_symbol();
         *level = cs->level;
